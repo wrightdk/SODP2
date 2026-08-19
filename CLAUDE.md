@@ -17,7 +17,7 @@ data/processed/salisbury/police_crime/*.json  ingested + provenance-tagged outpu
 ingest/police_crime.py                      the only ingestion script written so far
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
 .github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
-site/                                        Eleventy prototype — one unstyled page, reads data/processed/ directly
+site/                                        Eleventy site — real homepage + a bare /crime/ prototype page
 requirements.txt, .venv/                    see "Environment setup"
 pipeline/, narrative/                       empty (.gitkeep only) — not started
 ```
@@ -34,15 +34,44 @@ committed a fresh `data/processed/` file first. `/pipeline/` and
 `/narrative/` have no code in them yet — don't assume they have content;
 check before referencing a path there.
 
-`site/` is intentionally a bare prototype: one page
-(`site/src/index.njk`), no styling, no other data sources wired in.
-`site/src/_data/localities.js` is where it reads processed data from —
-it walks every subdirectory of `/data/processed/` and loads each
-locality's latest `police_crime/*.json`, so it doesn't hardcode
-"salisbury" even though that's the only locality with data today. Follow
-that pattern (read whatever's on disk, don't name a locality) when adding
-more data to the site rather than hardcoding a second special case
-alongside it.
+`site/src/index.njk` is the real homepage, built from an exported Claude
+Design mockup (see DESIGN_HANDOFF_NOTES.md — the four required changes
+listed there are implemented). `site/src/crime.njk` (`/crime/`) is still
+the bare Phase 2 prototype table, now wrapped in the same header/footer —
+it exists only because the homepage's one live card needs somewhere real
+to link to; it's not the "Crime & Safety" page design (that page wasn't
+in scope and isn't built).
+
+Data flows into templates through `site/src/_data/`:
+- `config.js` reads whichever `.yml` file it finds first under `/config/`
+  — single-locality only for now, see its own comment before assuming it
+  handles more than one.
+- `homeCards.js` is the card-gating logic: a card only shows a real
+  figure if its source is `enabled: true` in config **and**
+  `data/processed/<slug>/<source-key>/*.json` exists — otherwise SOON.
+  Adding real numbers for a new source means adding a formatter to
+  `FIGURE_FORMATTERS` in that file, not just dropping data on disk.
+- `localities.js` (from Phase 2) still walks every subdirectory of
+  `/data/processed/` for the `/crime/` page, so it doesn't hardcode
+  "salisbury" even though that's the only locality with data today.
+  Follow that pattern for any new per-locality data you wire into the
+  site.
+
+Two known gaps from this pass, both flagged rather than silently
+patched:
+- `config/salisbury.yml`'s `site.hero_image` points at
+  `assets/hero-salisbury.jpg`, but that file isn't in the repo — the
+  Claude Design MCP's `get_file` truncates anything over 256 KiB and the
+  hero photo exceeds that, so it couldn't be pulled in. The homepage
+  falls back to a plain `--accent-dark` background until someone adds the
+  real file at `site/src/assets/hero-salisbury.jpg`. `hero_image_credit`
+  is still the literal placeholder text from the handoff note — fill in
+  real attribution before this goes live.
+- `site/src/_includes/base.njk` hardcodes the logo path
+  (`/assets/logo-salisbury.jpg`) rather than reading it from config —
+  inconsistent with rule 2 below, but out of scope for this session since
+  DESIGN_HANDOFF_NOTES.md only called out the hero image fields. Worth
+  fixing the same way if a second locality ever gets added.
 
 The ONS reference CSVs/XLSX have already been moved into `/data/reference/`
 and the IMD file into `/data/raw/imd_deprivation/` — don't re-download or
