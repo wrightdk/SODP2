@@ -6,7 +6,7 @@
 // locality config.
 const path = require("path");
 const loadConfig = require("./config.js");
-const { latestFile } = require("../_helpers/sourceData.js");
+const { latestFile, readChartSvg } = require("../_helpers/sourceData.js");
 
 const DATA_ROOT = path.join(__dirname, "../../../data/processed");
 
@@ -54,9 +54,11 @@ const CARD_META = {
 // Sources with a formatter here can render real numbers once they have
 // enabled:true + processed data; sources without one always show SOON,
 // even if data later appears, until someone teaches this file how to
-// read that source's output shape. None of these have a sparkline yet —
-// each is a single snapshot (one month or one static release), not a
-// time series. See DESIGN_HANDOFF_NOTES.md point 4.
+// read that source's output shape. Formatters take (latest, slug) —
+// slug is only used by sources with a chart to read (see imd_deprivation
+// below); everything else ignores it. None of these have a time-series
+// sparkline yet — each source is a single snapshot (one month or one
+// static release), not a time series. See DESIGN_HANDOFF_NOTES.md point 4.
 const FIGURE_FORMATTERS = {
   police_crime: (latest) => ({
     figure: String(latest.crime_count),
@@ -79,13 +81,22 @@ const FIGURE_FORMATTERS = {
     fetchedAt: latest.fetched_at,
     updateLabel: `${latest.month} companies register`,
   }),
-  imd_deprivation: (latest) => ({
-    figure: `Decile ${latest.average_decile}`,
-    unit: `IMD, ${latest.release}`,
-    hasSpark: false,
-    fetchedAt: latest.fetched_at,
-    updateLabel: `${latest.release} deprivation data`,
-  }),
+  // Replaces the plain "Decile N" text stat with the compact choropleth
+  // from pipeline/imd_charts.py, per this session's scope — the card
+  // links to /deprivation/ for the full map (with legend) and the
+  // distribution chart. Falls back to the text figure if the chart
+  // hasn't been generated yet (pipeline/ runs separately from ingest/).
+  imd_deprivation: (latest, slug) => {
+    const chartSvg = readChartSvg(DATA_ROOT, slug, "imd_deprivation", "choropleth_mini");
+    return {
+      figure: chartSvg ? null : `Decile ${latest.average_decile}`,
+      chartSvg,
+      unit: `Decile ${latest.average_decile} · IMD, ${latest.release}`,
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `${latest.release} deprivation data`,
+    };
+  },
 };
 
 module.exports = function () {
@@ -99,13 +110,14 @@ module.exports = function () {
     const formatter = found ? FIGURE_FORMATTERS[key] : null;
 
     if (found && formatter) {
-      const f = formatter(found.data);
+      const f = formatter(found.data, slug);
       return {
         key,
         title: meta.title,
         page: meta.page,
         isSoon: false,
         figure: f.figure,
+        chartSvg: f.chartSvg || null,
         unit: f.unit,
         desc: meta.desc(config),
         hasSpark: !!f.hasSpark,
@@ -121,6 +133,7 @@ module.exports = function () {
       page: meta.page,
       isSoon: true,
       figure: "—",
+      chartSvg: null,
       unit: "coming soon",
       desc: meta.desc(config),
       hasSpark: false,

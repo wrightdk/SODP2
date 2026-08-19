@@ -49,7 +49,11 @@ isHome: true
         <div class="card__top">
           <h3 class="card__title">{{ card.title }}</h3>
         </div>
+        {% if card.chartSvg %}
+        <div class="card__chart">{{ card.chartSvg | safe }}</div>
+        {% else %}
         <span class="card__figure">{{ card.figure }}</span>
+        {% endif %}
         <p class="card__unit">{{ card.unit }}</p>
         {% if card.hasSpark %}
         <svg viewBox="0 0 120 34" width="100%" height="34" style="margin-top:12px;" aria-hidden="true">

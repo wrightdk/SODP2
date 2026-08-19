@@ -34,4 +34,13 @@ function localitiesWithSource(processedDir, sourceKey, dataFieldName) {
     .filter(Boolean);
 }
 
-module.exports = { latestFile, localitiesWithSource };
+// Reads a chart SVG written by /pipeline/ alongside a source's processed
+// JSON (data/processed/<slug>/<source>/charts/<name>.svg). Returns null
+// if it doesn't exist yet — pipeline charts are generated separately
+// from ingestion, so a page/card can predate its chart.
+function readChartSvg(processedDir, slug, sourceKey, name) {
+  const p = path.join(processedDir, slug, sourceKey, "charts", `${name}.svg`);
+  return fs.existsSync(p) ? fs.readFileSync(p, "utf-8") : null;
+}
+
+module.exports = { latestFile, localitiesWithSource, readChartSvg };

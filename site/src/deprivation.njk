@@ -22,6 +22,23 @@ isDeprivation: true
       fetched {{ data.fetched_at }}.
       <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
     </p>
+
+    {% if locality.choroplethSvg %}
+    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">Decile by LSOA</h3>
+      {{ locality.choroplethSvg | safe }}
+    </div>
+    {% endif %}
+    {% if locality.distributionSvg %}
+    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">Distribution across deciles</h3>
+      {{ locality.distributionSvg | safe }}
+    </div>
+    {% endif %}
+    {% if not locality.choroplethSvg and not locality.distributionSvg %}
+    <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">Charts not generated yet — run <code>pipeline/imd_charts.py</code>.</p>
+    {% endif %}
+
     <div style="overflow-x:auto;margin-top:16px;">
       <table style="width:100%;font-size:13.5px;">
         <thead>
