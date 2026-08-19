@@ -63,9 +63,8 @@ patched:
   `site/src/assets/hero-salisbury.jpg`, which is now in the repo (added
   by hand — the Claude Design MCP's `get_file` truncates anything over
   256 KiB, so the automated fetch of this photo came back incomplete and
-  couldn't be used). `hero_image_credit` is still the literal placeholder
-  text from the handoff note — fill in real attribution before this goes
-  live.
+  couldn't be used). `hero_image_credit` is filled in with real
+  attribution now too.
 - `site/src/_includes/base.njk` hardcodes the logo path
   (`/assets/logo-salisbury.jpg`) rather than reading it from config —
   inconsistent with rule 2 below, but out of scope for this session since

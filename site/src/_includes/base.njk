@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="{{ '/styles.css' | url }}">
   <style>
     :root { --accent-base: {{ config.site.accent_color }}; }
   </style>
@@ -24,14 +24,14 @@
 <body>
   <header class="site-header">
     <div class="site-header__bar">
-      <a class="brand" href="/">
-        <img src="/assets/logo-salisbury.jpg" alt="{{ config.narrative.project_name }} logo">
+      <a class="brand" href="{{ '/' | url }}">
+        <img src="{{ '/assets/logo-salisbury.jpg' | url }}" alt="{{ config.narrative.project_name }} logo">
         <span class="brand__name">{{ config.narrative.project_name }}</span>
       </a>
 
       <nav class="primary-nav" aria-label="Primary">
-        <a href="/" aria-current="{{ 'page' if isHome else 'false' }}">Home</a>
-        <a href="/crime/" aria-current="{{ 'page' if isCrime else 'false' }}">Crime &amp; Safety</a>
+        <a href="{{ '/' | url }}" aria-current="{{ 'page' if isHome else 'false' }}">Home</a>
+        <a href="{{ '/crime/' | url }}" aria-current="{{ 'page' if isCrime else 'false' }}">Crime &amp; Safety</a>
       </nav>
 
       <div class="header-controls">
@@ -53,8 +53,8 @@
         <p class="site-footer__tagline">{{ config.narrative.tagline }}</p>
       </div>
       <nav class="site-footer__nav" aria-label="Footer">
-        <a href="/">Home</a>
-        <a href="/crime/">Crime &amp; Safety</a>
+        <a href="{{ '/' | url }}">Home</a>
+        <a href="{{ '/crime/' | url }}">Crime &amp; Safety</a>
       </nav>
       <div class="site-footer__meta">
         <p>Published under the Open Government Licence.<br>
