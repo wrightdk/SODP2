@@ -140,9 +140,16 @@ sources:
   council_transparency:
     enabled: true
     council_name: "Wiltshire Council"
-    spend_over_500_url: "https://www.wiltshire.gov.uk/transparency-spend-over-500"
-    format: "csv"                         # csv | pdf | xlsx — selects the right parser
-    column_map:                           # councils name columns differently
+    spend_over_500_url: "https://www.wiltshire.gov.uk/open-data-payments"  # old URL 404'd;
+                                           # see CLAUDE.md for what's actually at this page
+                                           # (a listing page, not a direct file — and it's
+                                           # behind Cloudflare, see CLAUDE.md before building
+                                           # an ingestion script against it)
+    format: "csv"                         # csv | pdf | xlsx — selects the right parser.
+                                           # Confirmed correct: real files are .csv despite
+                                           # the page labelling them "Excel doc"
+    column_map:                           # UNVERIFIED — never confirmed against a real
+                                           # file (see CLAUDE.md); still the original guess
       amount: "Amount (£)"
       supplier: "Supplier Name"
       date: "Payment Date"

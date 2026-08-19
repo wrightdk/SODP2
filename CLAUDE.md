@@ -108,6 +108,43 @@ opens the PFA lookup with `csv.DictReader`, but that lookup ships as
 `.xlsx`, not `.csv` — pre-existing bug, not touched this session since
 LAD/LSOA resolution (the part that mattered here) doesn't depend on it.
 
+**council_transparency (Wiltshire spend-over-£500) is investigated but
+not built — it's blocked on a real Cloudflare wall, not just unstarted.**
+Findings from that investigation, so a future attempt doesn't have to
+re-derive them:
+- `config/salisbury.yml`'s `spend_over_500_url` was dead (404) — fixed
+  to the real page, `https://www.wiltshire.gov.uk/open-data-payments`.
+  That page is a listing (one row per month, grouped in per-financial-year
+  accordions you have to expand), not a direct file — there's no stable
+  URL pattern to construct by hand; each month's download link embeds a
+  CMS-assigned numeric ID and a cache-busting timestamp
+  (`/media/21219/2026-07-wiltshire-payments/excel/2026-07-wiltshire-payments.csv?m=...`)
+  that only appears by rendering the actual page.
+- `format: "csv"` in config is confirmed correct — the page mislabels
+  the files "Excel doc" but the files themselves are genuinely `.csv`.
+  `column_map`'s three field names are still an unverified guess; no file
+  was ever successfully downloaded to check real headers against them.
+- **The blocker**: wiltshire.gov.uk serves a Cloudflare JS challenge
+  ("Just a moment...", Turnstile-based) to non-browser HTTP clients.
+  Confirmed directly — `curl` and a plain HTTP GET both get the challenge
+  page instead of the CSV, with or without a browser-shaped User-Agent
+  header; a real browser (JS execution) gets a 200 for the identical URL.
+  This isn't fixable with request headers or `requests`/`urllib` alone.
+  Checked for an unprotected mirror too — data.gov.uk/CKAN lists this
+  dataset, but its cached resource URLs stop at 2011 and still point back
+  to wiltshire.gov.uk regardless, so that's not a working alternative.
+- Three ways forward were identified but not decided between: (1) a
+  headless-browser dependency (e.g. Playwright) to actually pass the
+  challenge — reliable but heavy, ~300MB of browser binaries, and would
+  need installing in `.github/workflows/ingest.yml` too; (2) a lighter
+  Cloudflare-bypass library (`cloudscraper`, `curl_cffi`) — much smaller,
+  but Turnstile-style challenges often defeat these, untested here; (3)
+  manual monthly download (same pattern as `imd_deprivation.py` — no
+  fetch, just parse whatever's already in `data/raw/`), which sidesteps
+  the problem but drops the "actually automated" part of ingestion.
+  Whoever picks this up next should decide between those with the user
+  rather than silently reaching for one.
+
 Two known gaps from an earlier pass, both flagged rather than silently
 patched:
 - `config/salisbury.yml`'s `site.hero_image` points at
