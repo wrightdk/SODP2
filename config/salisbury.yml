@@ -161,5 +161,13 @@ narrative:
 site:
   base_url: "https://opensalisbury.github.io"
   accent_color: "#2C5F2D"
+  hero_image: "assets/hero-salisbury.jpg"           # locality-specific — every
+                                                     # locality needs its own
+                                                     # photo, not a shared default.
+                                                     # File not yet in the repo — see
+                                                     # DESIGN_HANDOFF_NOTES.md / commit notes.
+  hero_image_credit: "Photo: [source/photographer], [licence]"  # TODO: fill in
+                                                     # real attribution before this
+                                                     # goes live — placeholder only
   social:
     twitter: null

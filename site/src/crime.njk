@@ -1,0 +1,46 @@
+---
+layout: base.njk
+title: Crime & Safety
+isCrime: true
+---
+<div class="section" style="padding-bottom:56px;">
+  <h1>Crime &amp; Safety</h1>
+  <p class="section__intro">Prototype output — proves the ingest-to-site pipeline runs end to end. No other data sources yet; this is not the final page design for this section.</p>
+
+  {% for locality in localities %}
+  {% set data = locality.policeCrime %}
+  <section style="margin-top:32px;">
+    <h2 style="font-size:22px;">{{ locality.slug }} — {{ data.month }}</h2>
+    <p style="color:var(--text-muted);margin-top:8px;">
+      {{ data.crime_count }} crimes within {{ data.filter.radius_km }}km of
+      {{ data.filter.centroid.lat }}, {{ data.filter.centroid.lon }}.
+      Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
+      fetched {{ data.fetched_at }}.
+    </p>
+    <div style="overflow-x:auto;margin-top:16px;">
+      <table style="width:100%;font-size:13.5px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Category</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Street</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Month</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for crime in data.crimes %}
+          <tr>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ crime.category }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ crime.location.street.name }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ crime.month }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ crime.outcome_status.category if crime.outcome_status else "—" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% else %}
+  <p style="margin-top:24px;">No processed data found yet — run an ingestion script first.</p>
+  {% endfor %}
+</div>
