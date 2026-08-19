@@ -37,6 +37,10 @@ jobs:
       - name: Build site
         working-directory: site
         run: npm run build
+        env:
+          # Project Pages serves this at github.io/SODP2/, not the domain
+          # root — see eleventy.config.js. Local builds default to "/".
+          PATH_PREFIX: /SODP2/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

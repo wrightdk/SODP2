@@ -163,11 +163,7 @@ site:
   accent_color: "#2C5F2D"
   hero_image: "assets/hero-salisbury.jpg"           # locality-specific — every
                                                      # locality needs its own
-                                                     # photo, not a shared default.
-                                                     # File not yet in the repo — see
-                                                     # DESIGN_HANDOFF_NOTES.md / commit notes.
-  hero_image_credit: "Photo: [source/photographer], [licence]"  # TODO: fill in
-                                                     # real attribution before this
-                                                     # goes live — placeholder only
+                                                     # photo, not a shared default
+  hero_image_credit: "Photo: Dan Wright, CC BY 4.0"
   social:
     twitter: null

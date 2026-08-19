@@ -3,13 +3,13 @@ layout: base.njk
 title: Home
 isHome: true
 ---
-<section class="hero" style="--hero-image: url('/{{ config.site.hero_image }}');">
+<section class="hero" style="--hero-image: url('{{ ('/' ~ config.site.hero_image) | url }}');">
   <div class="hero__inner">
     <p class="hero__eyebrow">{{ config.locality.name | upper }} &amp; {{ config.locality.region | upper }}</p>
     <h1>Public data, decoded for {{ config.locality.name }}.</h1>
     <p class="hero__lede">{{ config.narrative.tagline }}. Every figure on this site is traceable back to its source and the date it was fetched.</p>
     <div class="hero__actions">
-      <a class="btn btn--primary" href="/crime/">Explore the data</a>
+      <a class="btn btn--primary" href="{{ '/crime/' | url }}">Explore the data</a>
     </div>
   </div>
   {% if config.site.hero_image_credit %}
@@ -45,7 +45,7 @@ isHome: true
         <p class="card__desc">{{ card.desc }}</p>
       </div>
       {% else %}
-      <a class="card" href="/crime/">
+      <a class="card" href="{{ '/crime/' | url }}">
         <div class="card__top">
           <h3 class="card__title">{{ card.title }}</h3>
         </div>
