@@ -1,0 +1,49 @@
+---
+title: Police crime data
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+</head>
+<body>
+  <h1>{{ title }}</h1>
+  <p>Prototype output — proves the ingest-to-site pipeline runs end to end. No styling, no other data sources yet.</p>
+
+  {% for locality in localities %}
+  {% set data = locality.policeCrime %}
+  <section>
+    <h2>{{ locality.slug }} — {{ data.month }}</h2>
+    <p>
+      {{ data.crime_count }} crimes within {{ data.filter.radius_km }}km of
+      {{ data.filter.centroid.lat }}, {{ data.filter.centroid.lon }}.
+      Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
+      fetched {{ data.fetched_at }}.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Street</th>
+          <th>Month</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for crime in data.crimes %}
+        <tr>
+          <td>{{ crime.category }}</td>
+          <td>{{ crime.location.street.name }}</td>
+          <td>{{ crime.month }}</td>
+          <td>{{ crime.outcome_status.category if crime.outcome_status else "—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% else %}
+  <p>No processed data found yet — run an ingestion script first.</p>
+  {% endfor %}
+</body>
+</html>

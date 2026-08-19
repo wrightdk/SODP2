@@ -16,17 +16,33 @@ data/raw/police_crime/salisbury/*.json      cached raw police.uk pulls, one file
 data/processed/salisbury/police_crime/*.json  ingested + provenance-tagged output
 ingest/police_crime.py                      the only ingestion script written so far
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
+.github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
+site/                                        Eleventy prototype — one unstyled page, reads data/processed/ directly
 requirements.txt, .venv/                    see "Environment setup"
-pipeline/, narrative/, site/                empty (.gitkeep only) — not started
+pipeline/, narrative/                       empty (.gitkeep only) — not started
 ```
 
 `.github/workflows/ingest.yml` runs on a schedule but currently does
 nothing but confirm the job executes — it does **not** yet call
 `ingest/police_crime.py`. Wiring real ingestion into that workflow is
 still open work; don't assume scheduled runs are producing fresh data
-until that's done. `/pipeline/`, `/narrative/`, and `/site/` have no code
-in them yet — don't assume any of that scaffolding has content; check
-before referencing a path there.
+until that's done. `.github/workflows/deploy.yml` runs on push to `main`
+(and manually via `workflow_dispatch`) and builds `site/` from whatever
+`data/processed/` contains at that commit — it does not run ingestion
+itself, so a deploy only picks up new data once something else has
+committed a fresh `data/processed/` file first. `/pipeline/` and
+`/narrative/` have no code in them yet — don't assume they have content;
+check before referencing a path there.
+
+`site/` is intentionally a bare prototype: one page
+(`site/src/index.njk`), no styling, no other data sources wired in.
+`site/src/_data/localities.js` is where it reads processed data from —
+it walks every subdirectory of `/data/processed/` and loads each
+locality's latest `police_crime/*.json`, so it doesn't hardcode
+"salisbury" even though that's the only locality with data today. Follow
+that pattern (read whatever's on disk, don't name a locality) when adding
+more data to the site rather than hardcoding a second special case
+alongside it.
 
 The ONS reference CSVs/XLSX have already been moved into `/data/reference/`
 and the IMD file into `/data/raw/imd_deprivation/` — don't re-download or
@@ -91,6 +107,11 @@ uv run generate_locality_geography.py \
 
 # Ingestion: police.uk crime data for one locality, filtered by centroid + radius_km
 uv run ingest/police_crime.py --config config/salisbury.yml
+
+# Site: build the Eleventy prototype from whatever's in data/processed/
+cd site && npm install   # first time only, or after package.json changes
+cd site && npm run build # writes site/_site/
+cd site && npm run serve # local dev server with live reload
 ```
 
 `generate_locality_geography.py` takes no other arguments and has no test
