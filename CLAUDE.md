@@ -10,16 +10,21 @@ pushed to a remote). What's actually built vs. still just scaffolding:
 ```
 config/salisbury.yml                       the only locality config so far
 generate_locality_geography.py             onboarding script (v2, "small lookups" approach)
+fetch_lsoa_boundaries.py                    one-off cache of LSOA boundary geometry (see below)
 data/reference/*.csv, *.xlsx                cached ONS geography lookups
+data/reference/lsoa_boundaries_salisbury.geojson  cached LSOA boundaries, for choropleths
 data/raw/imd_deprivation/*.xlsx             cached raw IMD file (source for imd_deprivation)
 data/raw/{police_crime,ons_population,companies_house}/salisbury/*.json  cached raw API pulls
 data/processed/salisbury/{police_crime,ons_population,imd_deprivation}/*.json  live sources
+data/processed/salisbury/imd_deprivation/charts/*.svg  pipeline-generated IMD charts
 ingest/{police_crime,ons_population,companies_house,imd_deprivation}.py  four ingestion scripts
+pipeline/choropleth.py                     shared, source-agnostic LSOA choropleth renderer
+pipeline/imd_charts.py                     IMD-specific: calls choropleth.py + a distribution bar
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
 .github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
 site/                                        Eleventy site — homepage + one page per live source
 requirements.txt, .venv/                    see "Environment setup"
-pipeline/, narrative/                       empty (.gitkeep only) — not started
+narrative/                                  empty (.gitkeep only) — not started
 ```
 
 `.github/workflows/ingest.yml` runs on a schedule but currently does
@@ -108,6 +113,91 @@ opens the PFA lookup with `csv.DictReader`, but that lookup ships as
 `.xlsx`, not `.csv` — pre-existing bug, not touched this session since
 LAD/LSOA resolution (the part that mattered here) doesn't depend on it.
 
+**No historical snapshots exist anywhere yet** — every source in
+`data/processed/` has exactly one file (one month, one year, or one
+static release). Checked explicitly for this session since it was
+flagged as open in an earlier session. This still doesn't block
+choropleth/distribution charts (they're spatial, not time-series — one
+snapshot is all either needs), but it does mean **no sparkline or
+trend-over-time chart can be built for any source yet**, and nothing in
+this session started persisting dated snapshots to make that possible —
+that's real scope for whichever session builds the first trend chart
+(population pyramid, crime trend line, etc., per
+`ANALYSIS_CHARTS_SPEC.md`), not something to assume already exists.
+
+**pipeline/ has its first real content**: `choropleth.py` (generic —
+takes `{lsoa_code: value}` + a colour scale, returns an SVG; knows
+nothing about IMD or any other source) and `imd_charts.py` (IMD-specific
+caller, plus the distribution bar chart, which isn't shared yet — only
+the choropleth has a second consumer so far). Reused unchanged by
+whichever source's charts get built next per `ANALYSIS_CHARTS_SPEC.md`'s
+build order — don't fork `choropleth.py` per source; add a caller module
+instead, the same way `imd_charts.py` does.
+
+Rendering is pure Python stdlib — no geopandas/shapely/pyproj. The LSOA
+boundaries turned out simple enough (13.5KB for Salisbury's 28 LSOAs,
+plain `Polygon`s, ~260 total points) that a real GIS library would have
+been a lot of dependency weight for no benefit; `choropleth.py` does its
+own equirectangular projection and SVG path generation. Revisit this
+choice if a future locality's boundaries turn out far more complex, or a
+future chart needs an actual geospatial operation (reprojection, spatial
+join) this module doesn't do.
+
+`fetch_lsoa_boundaries.py` (repo root, one-off, same status as
+`generate_locality_geography.py` — **not** in `.github/workflows/ingest.yml`)
+queries the ONS Open Geography Portal's LSOA (Dec 2021) BSC boundary
+FeatureServer, filtered to `config.geography.lsoa_codes`, and caches the
+result to `data/reference/lsoa_boundaries_<slug>.geojson`. Re-run it by
+hand if a locality's `lsoa_codes` change.
+
+The homepage card mechanism gained a second visual type: `card.chartSvg`
+(raw SVG, rendered via `| safe`) alongside the existing `card.hasSpark`
+sparkline-polyline mechanism — see `homeCards.js`. IMD's card uses a
+compact, legend-less choropleth (`choropleth_mini.svg`) in place of its
+old "Decile N" text stat; the full map (with legend) and the distribution
+chart are on `/deprivation/` only. Both mechanisms read a chart file that
+`pipeline/` writes separately from what `ingest/` writes — a card or page
+can load before its chart has been generated (rendered as if it just
+doesn't have one), so re-run `pipeline/imd_charts.py` after
+`ingest/imd_deprivation.py`, not assume one triggers the other.
+
+**council_transparency (Wiltshire spend-over-£500) is investigated but
+not built — it's blocked on a real Cloudflare wall, not just unstarted.**
+Findings from that investigation, so a future attempt doesn't have to
+re-derive them:
+- `config/salisbury.yml`'s `spend_over_500_url` was dead (404) — fixed
+  to the real page, `https://www.wiltshire.gov.uk/open-data-payments`.
+  That page is a listing (one row per month, grouped in per-financial-year
+  accordions you have to expand), not a direct file — there's no stable
+  URL pattern to construct by hand; each month's download link embeds a
+  CMS-assigned numeric ID and a cache-busting timestamp
+  (`/media/21219/2026-07-wiltshire-payments/excel/2026-07-wiltshire-payments.csv?m=...`)
+  that only appears by rendering the actual page.
+- `format: "csv"` in config is confirmed correct — the page mislabels
+  the files "Excel doc" but the files themselves are genuinely `.csv`.
+  `column_map`'s three field names are still an unverified guess; no file
+  was ever successfully downloaded to check real headers against them.
+- **The blocker**: wiltshire.gov.uk serves a Cloudflare JS challenge
+  ("Just a moment...", Turnstile-based) to non-browser HTTP clients.
+  Confirmed directly — `curl` and a plain HTTP GET both get the challenge
+  page instead of the CSV, with or without a browser-shaped User-Agent
+  header; a real browser (JS execution) gets a 200 for the identical URL.
+  This isn't fixable with request headers or `requests`/`urllib` alone.
+  Checked for an unprotected mirror too — data.gov.uk/CKAN lists this
+  dataset, but its cached resource URLs stop at 2011 and still point back
+  to wiltshire.gov.uk regardless, so that's not a working alternative.
+- Three ways forward were identified but not decided between: (1) a
+  headless-browser dependency (e.g. Playwright) to actually pass the
+  challenge — reliable but heavy, ~300MB of browser binaries, and would
+  need installing in `.github/workflows/ingest.yml` too; (2) a lighter
+  Cloudflare-bypass library (`cloudscraper`, `curl_cffi`) — much smaller,
+  but Turnstile-style challenges often defeat these, untested here; (3)
+  manual monthly download (same pattern as `imd_deprivation.py` — no
+  fetch, just parse whatever's already in `data/raw/`), which sidesteps
+  the problem but drops the "actually automated" part of ingestion.
+  Whoever picks this up next should decide between those with the user
+  rather than silently reaching for one.
+
 Two known gaps from an earlier pass, both flagged rather than silently
 patched:
 - `config/salisbury.yml`'s `site.hero_image` points at
@@ -195,6 +285,12 @@ COMPANIES_HOUSE_API_KEY=... uv run ingest/companies_house.py --config config/sal
 # Ingestion: IMD, joined against lsoa_codes — no network call, reads data/raw/imd_deprivation/*.xlsx
 uv run ingest/imd_deprivation.py --config config/salisbury.yml
 
+# Onboarding: cache LSOA boundary geometry for choropleths (one-off, like generate_locality_geography.py)
+uv run fetch_lsoa_boundaries.py --config config/salisbury.yml
+
+# Pipeline: IMD choropleth + distribution bar charts — run after ingest/imd_deprivation.py
+uv run pipeline/imd_charts.py --config config/salisbury.yml
+
 # Site: build the Eleventy site (homepage + one page per live source) from data/processed/
 cd site && npm install   # first time only, or after package.json changes
 cd site && npm run build # writes site/_site/
@@ -214,9 +310,8 @@ continuously-updated register); `imd_deprivation.py` makes no network
 call at all, so there's nothing to cache — it just re-parses the
 already-cached `data/raw/imd_deprivation/*.xlsx` every run.
 
-There is no lint or test suite yet. When `/pipeline/` or `/narrative/` get
-code, add their run/test commands here rather than leaving future sessions
-to guess.
+There is no lint or test suite yet. When `/narrative/` gets code, add its
+run/test commands here rather than leaving future sessions to guess.
 
 ## The non-negotiable rules
 
@@ -335,20 +430,22 @@ they aren't ONS products.
 ## Target repo structure
 
 See "Current state of the repository" above for what's actually built.
-`/config/`, `/data/`, `/ingest/` (partially), and `.github/workflows/`
-exist; `/pipeline/`, `/narrative/`, and `/site/` are still empty:
+`/config/`, `/data/`, `/ingest/` (partially), `/pipeline/` (just the two
+IMD charts so far), `/site/`, and `.github/workflows/` all have real
+content now; only `/narrative/` is still empty:
 
 ```
 /config/                  locality configs — the only place per-town detail lives
-/data/reference/           cached ONS lookup tables (small — BUA, PCON, PFA)
+/data/reference/           cached ONS lookup tables (small — BUA, PCON, PFA, LSOA boundaries)
 /data/raw/                 cached raw API pulls, gitignored or LFS as appropriate
-/data/processed/           filtered + computed output, what the site reads from
+/data/processed/           filtered + computed output (+ pipeline-generated charts), what the site reads from
 /ingest/                   one script per data source, all config-driven
-/pipeline/                 geography filtering, stats computation — deterministic only
+/pipeline/                 geography filtering, stats computation, chart rendering — deterministic only
 /narrative/                LLM article drafting + per-locality voice guides
-/site/                     static site source (11ty/Astro — see README)
+/site/                     static site source (11ty — see README)
 .github/workflows/         scheduled ingest + build/deploy
 generate_locality_geography.py   onboarding tool, run by hand, not scheduled
+fetch_lsoa_boundaries.py         onboarding tool, run by hand, not scheduled
 ```
 
 ## Coding conventions
