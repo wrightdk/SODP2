@@ -1,0 +1,51 @@
+---
+layout: base.njk
+title: Deprivation (IMD)
+isDeprivation: true
+---
+<div class="section" style="padding-bottom:56px;">
+  <h1>Deprivation (IMD)</h1>
+  <p class="section__intro">
+    English Indices of Deprivation, joined per Lower-layer Super Output Area (LSOA) within
+    the locality's built-up area. Decile 1 is the most deprived 10% of LSOAs in England,
+    decile 10 the least.
+  </p>
+
+  {% for locality in deprivationLocalities %}
+  {% set data = locality.deprivation %}
+  <section style="margin-top:32px;">
+    <h2 style="font-size:22px;">{{ locality.slug }} — {{ data.release }}</h2>
+    <p style="color:var(--text-muted);margin-top:8px;">
+      Average decile {{ data.average_decile }} across {{ data.lsoa_count_matched }} LSOAs
+      ({{ data.average_decile_method }}).
+      Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
+      fetched {{ data.fetched_at }}.
+      <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
+    </p>
+    <div style="overflow-x:auto;margin-top:16px;">
+      <table style="width:100%;font-size:13.5px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">LSOA</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Code</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Rank</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Decile</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lsoa in data.lsoas %}
+          <tr>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ lsoa.lsoa_name }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ lsoa.lsoa_code }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;">{{ lsoa.imd_rank }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;">{{ lsoa.imd_decile }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% else %}
+  <p style="margin-top:24px;">No processed data found yet — run <code>ingest/imd_deprivation.py</code> first.</p>
+  {% endfor %}
+</div>

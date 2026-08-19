@@ -16,6 +16,7 @@ isCrime: true
       {{ data.filter.centroid.lat }}, {{ data.filter.centroid.lon }}.
       Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
       fetched {{ data.fetched_at }}.
+      <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
     </p>
     <div style="overflow-x:auto;margin-top:16px;">
       <table style="width:100%;font-size:13.5px;">

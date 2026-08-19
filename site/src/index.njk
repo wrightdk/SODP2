@@ -9,7 +9,7 @@ isHome: true
     <h1>Public data, decoded for {{ config.locality.name }}.</h1>
     <p class="hero__lede">{{ config.narrative.tagline }}. Every figure on this site is traceable back to its source and the date it was fetched.</p>
     <div class="hero__actions">
-      <a class="btn btn--primary" href="{{ '/crime/' | url }}">Explore the data</a>
+      <a class="btn btn--primary" href="#data">Explore the data</a>
     </div>
   </div>
   {% if config.site.hero_image_credit %}
@@ -28,7 +28,7 @@ isHome: true
 </div>
 {% endif %}
 
-<section class="section">
+<section class="section" id="data">
   <h2>Explore {{ config.locality.name }}'s data</h2>
   <p class="section__intro">{{ homeCards.length }} national dataset{{ "s" if homeCards.length != 1 }}, filtered down to the {{ config.locality.name }} built-up area only.</p>
 
@@ -45,7 +45,7 @@ isHome: true
         <p class="card__desc">{{ card.desc }}</p>
       </div>
       {% else %}
-      <a class="card" href="{{ '/crime/' | url }}">
+      <a class="card" href="{{ card.page | url }}">
         <div class="card__top">
           <h3 class="card__title">{{ card.title }}</h3>
         </div>

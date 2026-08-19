@@ -32,6 +32,9 @@
       <nav class="primary-nav" aria-label="Primary">
         <a href="{{ '/' | url }}" aria-current="{{ 'page' if isHome else 'false' }}">Home</a>
         <a href="{{ '/crime/' | url }}" aria-current="{{ 'page' if isCrime else 'false' }}">Crime &amp; Safety</a>
+        <a href="{{ '/population/' | url }}" aria-current="{{ 'page' if isPopulation else 'false' }}">Population</a>
+        <a href="{{ '/companies/' | url }}" aria-current="{{ 'page' if isCompanies else 'false' }}">Companies</a>
+        <a href="{{ '/deprivation/' | url }}" aria-current="{{ 'page' if isDeprivation else 'false' }}">Deprivation</a>
       </nav>
 
       <div class="header-controls">
@@ -55,6 +58,9 @@
       <nav class="site-footer__nav" aria-label="Footer">
         <a href="{{ '/' | url }}">Home</a>
         <a href="{{ '/crime/' | url }}">Crime &amp; Safety</a>
+        <a href="{{ '/population/' | url }}">Population</a>
+        <a href="{{ '/companies/' | url }}">Companies</a>
+        <a href="{{ '/deprivation/' | url }}">Deprivation</a>
       </nav>
       <div class="site-footer__meta">
         <p>Published under the Open Government Licence.<br>
