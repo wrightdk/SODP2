@@ -59,34 +59,51 @@ const CARD_META = {
 // below); everything else ignores it. None of these have a time-series
 // sparkline yet — each source is a single snapshot (one month or one
 // static release), not a time series. See DESIGN_HANDOFF_NOTES.md point 4.
+//
+// Every field a formatter reads here is written by a pipeline/ script,
+// not ingest/ (see CLAUDE.md rule 1) — ingest/ and pipeline/ run as
+// separate steps, so a formatter must return null if pipeline/ hasn't
+// run yet rather than render "undefined". A card that's missing its
+// computed stat shows SOON, the same as a card with no data at all —
+// never a broken-looking number.
 const FIGURE_FORMATTERS = {
-  police_crime: (latest) => ({
-    figure: String(latest.crime_count),
-    unit: `incidents, ${latest.month}`,
-    hasSpark: false,
-    fetchedAt: latest.fetched_at,
-    updateLabel: `${latest.month} incidents`,
-  }),
-  ons_population: (latest) => ({
-    figure: latest.population.toLocaleString("en-GB"),
-    unit: `residents, mid-${latest.year}`,
-    hasSpark: false,
-    fetchedAt: latest.fetched_at,
-    updateLabel: `mid-${latest.year} population estimate`,
-  }),
-  companies_house: (latest) => ({
-    figure: String(latest.active_count),
-    unit: "active companies",
-    hasSpark: false,
-    fetchedAt: latest.fetched_at,
-    updateLabel: `${latest.month} companies register`,
-  }),
+  police_crime: (latest) => {
+    if (latest.crime_count === undefined) return null; // pipeline/police_crime_stats.py hasn't run
+    return {
+      figure: String(latest.crime_count),
+      unit: `incidents, ${latest.month}`,
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `${latest.month} incidents`,
+    };
+  },
+  ons_population: (latest) => {
+    if (latest.population === undefined) return null; // pipeline/ons_population_stats.py hasn't run
+    return {
+      figure: latest.population.toLocaleString("en-GB"),
+      unit: `residents, mid-${latest.year}`,
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `mid-${latest.year} population estimate`,
+    };
+  },
+  companies_house: (latest) => {
+    if (latest.active_count === undefined) return null; // pipeline/companies_house_stats.py hasn't run
+    return {
+      figure: String(latest.active_count),
+      unit: "active companies",
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `${latest.month} companies register`,
+    };
+  },
   // Replaces the plain "Decile N" text stat with the compact choropleth
   // from pipeline/imd_charts.py, per this session's scope — the card
   // links to /deprivation/ for the full map (with legend) and the
   // distribution chart. Falls back to the text figure if the chart
   // hasn't been generated yet (pipeline/ runs separately from ingest/).
   imd_deprivation: (latest, slug) => {
+    if (latest.average_decile === undefined) return null; // pipeline/imd_charts.py hasn't run
     const chartSvg = readChartSvg(DATA_ROOT, slug, "imd_deprivation", "choropleth_mini");
     return {
       figure: chartSvg ? null : `Decile ${latest.average_decile}`,
@@ -108,9 +125,9 @@ module.exports = function () {
     const meta = CARD_META[key] || { title: key, page: null, desc: () => "" };
     const found = sourceConfig.enabled ? latestFile(DATA_ROOT, slug, key) : null;
     const formatter = found ? FIGURE_FORMATTERS[key] : null;
+    const f = formatter ? formatter(found.data, slug) : null;
 
-    if (found && formatter) {
-      const f = formatter(found.data, slug);
+    if (f) {
       return {
         key,
         title: meta.title,

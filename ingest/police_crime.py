@@ -16,6 +16,10 @@ then the raw response is cached at
   data/raw/police_crime/<slug>/<month>.json
 and re-used on subsequent runs for the same month instead of re-fetching.
 
+This script writes the fetched, filtered crime records — nothing derived
+from them. Run pipeline/police_crime_stats.py after this to compute
+crime_count and anything else derived from the list; see CLAUDE.md rule 1.
+
 Usage:
     python ingest/police_crime.py --config config/salisbury.yml
 """
@@ -117,10 +121,10 @@ def main():
         print(f"police_crime is disabled in {args.config} — nothing to do.")
         return
 
-    filter_by = source_config.get("filter_by")
-    if filter_by != "radius":
+    filter_method = source_config.get("filter_method")
+    if filter_method != "radius":
         raise ValueError(
-            f"police_crime.filter_by={filter_by!r} isn't implemented — this script only handles 'radius'."
+            f"police_crime.filter_method={filter_method!r} isn't implemented — this script only handles 'radius'."
         )
 
     slug = config["locality"]["slug"]
@@ -144,7 +148,6 @@ def main():
                 "locality": slug,
                 "month": month,
                 "filter": {"method": "radius", "centroid": {"lat": lat, "lon": lon}, "radius_km": radius_km},
-                "crime_count": len(crimes),
                 "crimes": crimes,
             },
             indent=2,

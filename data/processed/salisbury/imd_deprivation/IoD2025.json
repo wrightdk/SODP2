@@ -7,8 +7,6 @@
     "method": "lsoa_codes",
     "lsoa_code_count": 28
   },
-  "average_decile": 7,
-  "average_decile_method": "unweighted mean of IMD decile across matched LSOAs",
   "lsoa_count_matched": 28,
   "lsoas": [
     {
@@ -179,5 +177,7 @@
       "imd_rank": 20843,
       "imd_decile": 7
     }
-  ]
+  ],
+  "average_decile": 7,
+  "average_decile_method": "unweighted mean of IMD decile across matched LSOAs"
 }

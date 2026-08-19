@@ -13,10 +13,12 @@ English IMD only: this reads the "IMD25" sheet of the IoD2025 workbook
 (LSOA code / rank / decile columns). A Welsh locality would need WIMD
 instead — different file, different columns, not handled here.
 
-The locality-level "average decile" is an unweighted mean of decile
-across the locality's matched LSOAs, not a population-weighted score —
-simpler than MHCLG's official area-summary methodology, and labelled as
-such in the output so nobody mistakes it for an official summary figure.
+This script writes the per-LSOA rank/decile table only — no locality-level
+summary. Run pipeline/imd_charts.py after this, which computes
+average_decile (an unweighted mean across matched LSOAs, not a
+population-weighted score — simpler than MHCLG's official area-summary
+methodology, and labelled as such so nobody mistakes it for an official
+summary figure) alongside the IMD charts; see CLAUDE.md rule 1.
 
 Usage:
     python ingest/imd_deprivation.py --config config/salisbury.yml
@@ -110,7 +112,6 @@ def main():
         missing = set(lsoa_codes) - {m["lsoa_code"] for m in matched}
         print(f"WARNING: {len(missing)} of {len(lsoa_codes)} lsoa_codes not found in {workbook_path}: {sorted(missing)}")
 
-    average_decile = round(sum(m["imd_decile"] for m in matched) / len(matched))
     fetched_at = datetime.fromtimestamp(workbook_path.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     processed_dir = Path("data/processed") / slug / "imd_deprivation"
@@ -124,8 +125,6 @@ def main():
                 "locality": slug,
                 "release": release,
                 "filter": {"method": geography_key, "lsoa_code_count": len(lsoa_codes)},
-                "average_decile": average_decile,
-                "average_decile_method": "unweighted mean of IMD decile across matched LSOAs",
                 "lsoa_count_matched": len(matched),
                 "lsoas": sorted(matched, key=lambda m: m["lsoa_code"]),
             },
@@ -133,7 +132,7 @@ def main():
         ),
         encoding="utf-8",
     )
-    print(f"Wrote IMD decile {average_decile} ({len(matched)} LSOAs) for {slug} ({release}) to {processed_path}")
+    print(f"Wrote IMD data for {len(matched)} LSOAs for {slug} ({release}) to {processed_path}")
 
 
 if __name__ == "__main__":

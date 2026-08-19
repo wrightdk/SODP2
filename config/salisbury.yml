@@ -125,24 +125,43 @@ sources:
 
   police_crime:
     enabled: true
-    filter_by: "radius"                   # options: radius | force_name
+    filter_method: "radius"               # options: radius | force_name — needs an algorithm
+                                           # (centroid + radius_km together), not just a
+                                           # single geography.* field, so it's filter_method,
+                                           # not geography_key — see CLAUDE.md
     update_frequency: "monthly"
 
   companies_house:
     enabled: true
-    filter_by: "postcode_prefixes"
+    geography_key: postcode_prefixes      # was filter_by: "postcode_prefixes" — unified
+                                           # onto geography_key since this is simple list
+                                           # membership against one geography.* field, same
+                                           # pattern as ons_population/imd_deprivation
     update_frequency: "monthly"
 
   # Council transparency publishing is the least standardised part
   # of UK local data — this is where per-locality reality lives.
-  # The parser script is generic (reads `format`); the specifics
-  # of THIS council's export are captured here, not hardcoded.
+  # The parser is INTENDED to be generic (reads `format` + `column_map`)
+  # but ingest/council_transparency.py doesn't exist yet — investigated,
+  # not built: the target page is behind a Cloudflare JS challenge that
+  # plain HTTP requests can't pass. See CLAUDE.md for the full findings
+  # before starting on this script, so you don't re-discover the same
+  # blocker from scratch.
   council_transparency:
     enabled: true
     council_name: "Wiltshire Council"
-    spend_over_500_url: "https://www.wiltshire.gov.uk/transparency-spend-over-500"
-    format: "csv"                         # csv | pdf | xlsx — selects the right parser
-    column_map:                           # councils name columns differently
+    spend_over_500_url: "https://www.wiltshire.gov.uk/open-data-payments"  # NOT a direct
+                                           # file — a listing page grouped by financial
+                                           # year; each month's real download URL has a
+                                           # CMS-assigned ID only visible by rendering it
+    format: "csv"                         # csv | pdf | xlsx — selects the right parser.
+                                           # Confirmed correct against the real files
+                                           # (the page mislabels them "Excel doc")
+    column_map:                           # councils name columns differently — UNVERIFIED:
+                                           # no file has ever been successfully downloaded
+                                           # to check these against real headers (blocked
+                                           # on Cloudflare, see above), so treat these three
+                                           # names as a guess, not a confirmed schema
       amount: "Amount (£)"
       supplier: "Supplier Name"
       date: "Payment Date"
@@ -173,7 +192,8 @@ sources:
   # script exists — see CLAUDE.md before enabling.
   local_elections:
     enabled: false
-    filter_by: "wards"
+    geography_key: wards                  # was filter_by: "wards" — simple list membership,
+                                           # same geography_key pattern as the other sources
     update_frequency: "as elections occur"
 
 # ----------------------------------------------------------------
@@ -194,6 +214,9 @@ narrative:
 site:
   base_url: "https://opensalisbury.github.io"
   accent_color: "#2C5F2D"
+  logo: "assets/logo-salisbury.jpg"                 # locality-specific — was hardcoded in
+                                                     # base.njk until this session; every
+                                                     # locality needs its own logo file
   hero_image: "assets/hero-salisbury.jpg"           # locality-specific — every
                                                      # locality needs its own
                                                      # photo, not a shared default

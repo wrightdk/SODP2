@@ -1,6 +1,7 @@
 """
 companies_house.py — ingests active/registered companies for a locality,
-filtered by `postcode_prefixes`.
+filtered by config's `geography_key` (postcode_prefixes by default —
+same pattern as ons_population.py/imd_deprivation.py, not a one-off).
 
 Auth: Companies House uses HTTP Basic auth with the API key as the
 username and an empty password — read from the COMPANIES_HOUSE_API_KEY
@@ -21,6 +22,10 @@ Caching: the register changes continuously (no natural monthly
 snapshot boundary like police.uk), so this follows config's declared
 `update_frequency: monthly` as the cache granularity — one raw pull per
 calendar month, re-used for the rest of that month.
+
+This script writes the filtered company list only — no counts. Run
+pipeline/companies_house_stats.py after this to compute company_count and
+active_count; see CLAUDE.md rule 1.
 
 Usage:
     COMPANIES_HOUSE_API_KEY=... python ingest/companies_house.py --config config/salisbury.yml
@@ -98,12 +103,6 @@ def main():
         print(f"companies_house is disabled in {args.config} — nothing to do.")
         return
 
-    filter_by = source_config.get("filter_by")
-    if filter_by != "postcode_prefixes":
-        raise ValueError(
-            f"companies_house.filter_by={filter_by!r} isn't implemented — this script only handles 'postcode_prefixes'."
-        )
-
     api_key = os.environ.get("COMPANIES_HOUSE_API_KEY")
     if not api_key:
         raise RuntimeError(
@@ -113,9 +112,10 @@ def main():
         )
 
     slug = config["locality"]["slug"]
-    prefixes = config["geography"].get("postcode_prefixes")
+    geography_key = source_config.get("geography_key", "postcode_prefixes")
+    prefixes = config["geography"].get(geography_key)
     if not prefixes:
-        raise ValueError("config.geography.postcode_prefixes is empty — nothing to search Companies House with.")
+        raise ValueError(f"config.geography.{geography_key} is empty — nothing to search Companies House with.")
 
     month = args.month or datetime.now(timezone.utc).strftime("%Y-%m")
     raw_dir = Path("data/raw/companies_house") / slug
@@ -161,8 +161,6 @@ def main():
         }
         for c in companies
     ]
-    active_count = sum(1 for c in summarised if c["company_status"] == "active")
-
     processed_path.write_text(
         json.dumps(
             {
@@ -172,16 +170,14 @@ def main():
                 "fetched_at": fetched_at,
                 "locality": slug,
                 "month": month,
-                "filter": {"method": "postcode_prefixes", "postcode_prefixes": prefixes},
-                "company_count": len(summarised),
-                "active_count": active_count,
+                "filter": {"method": geography_key, geography_key: prefixes},
                 "companies": summarised,
             },
             indent=2,
         ),
         encoding="utf-8",
     )
-    print(f"Wrote {len(summarised)} companies ({active_count} active) for {slug} ({month}) to {processed_path}")
+    print(f"Wrote {len(summarised)} companies for {slug} ({month}) to {processed_path}")
 
 
 if __name__ == "__main__":

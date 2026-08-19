@@ -102,16 +102,25 @@ geography generator script, not just a new config file.
 | Companies House | UK-wide | Filtered via `postcode_prefixes` |
 | Index of Multiple Deprivation | England only (Wales has a separate, non-comparable WIMD) | Filtered via `lsoa_codes`; a per-LSOA table, not a single locality value — see config comments |
 | Local elections | Ward-level, England/Wales | Filtered via `wards`; disabled by default until the ingestion script exists |
-| Council transparency (spend, planning) | Varies by council | Genuinely non-standardised — see below |
+| Council transparency (spend-over-£500) | Varies by council | Genuinely non-standardised — see below. Config: `council_transparency` |
+| Planning register | Varies by council | Genuinely non-standardised, same as above. Config: `planning_register` (separate source, disabled by default) |
 
-Council transparency data is the one area where "one pipeline, many
-localities" breaks down cleanly. Every council publishes spend-over-£500
-logs and planning registers in its own format (CSV, PDF, XLSX, with
-different column names). The parser script is generic — it reads a
-`format` field and a `column_map` from config — but the specifics of each
-council's actual export are captured per-locality in config, not
-hardcoded. This is also where document-extraction (PDF table parsing, OCR
-on scanned committee papers) does real, previously-manual work.
+Council transparency and planning register data are the one area where
+"one pipeline, many localities" breaks down cleanly — and they're two
+separate sources in config (`council_transparency`, `planning_register`),
+not one, since a council can publish one without the other. Every council
+publishes spend-over-£500 logs and planning registers in its own format
+(CSV, PDF, XLSX, with different column names). The parser script is meant
+to be generic — reading a `format` field and a `column_map` from
+config — but the specifics of each council's actual export are captured
+per-locality in config, not hardcoded. This is also where
+document-extraction (PDF table parsing, OCR on scanned committee papers)
+does real, previously-manual work. **Neither ingestion script exists yet**
+— `council_transparency` was investigated and found to need a
+headless-browser dependency to get past the target council's Cloudflare
+protection (see CLAUDE.md for the full findings); `planning_register` is
+config scaffolding only, disabled by default, and hasn't been
+investigated at all.
 
 ## Running costs
 
@@ -128,13 +137,18 @@ Designed to be a low-single-digit-pounds-per-month project:
 
 ```
 /config/                  one YAML file per locality — the portability layer
-/data/reference/          cached small ONS lookup tables (BUA, PCON, PFA)
-/ingest/                  one script per data source, config-driven
-/pipeline/                geography filtering + stats computation (deterministic)
+/data/reference/          cached small ONS lookup tables (BUA, PCON, PFA, LSOA boundaries)
+/ingest/                  one script per data source, config-driven — fetches and filters,
+                          computes nothing (see CLAUDE.md rule 1)
+/pipeline/                stats computation + chart rendering — deterministic, this is
+                          where ingested facts become the derived numbers a page shows
 /narrative/               LLM-drafted article generation + voice guides
 /site/                    static site source
 .github/workflows/        scheduled ingestion + build/deploy Actions
-generate_locality_geography.py   one-off onboarding script for new localities
+generate_locality_geography.py   one-off onboarding script for new localities — see
+                          CLAUDE.md for which of its documented steps are actually built
+fetch_lsoa_boundaries.py  one-off onboarding script, caches LSOA boundary geometry
+                          for choropleth charts
 CLAUDE.md                 conventions for Claude Code — read this first
 ```
 
@@ -142,13 +156,24 @@ CLAUDE.md                 conventions for Claude Code — read this first
 
 1. Download the three ONS lookup files listed above into `/data/reference/`.
 2. Run `generate_locality_geography.py` against a Built-Up Area name to
-   produce a `geography:` block.
+   produce a `geography:` block. **This currently only resolves
+   `lsoa_codes`, `local_authority_codes`, `parliamentary_constituencies`,
+   and `police_force`** — `wards`, `rural_urban_classification`, and
+   `postcode_prefixes` still need hand entry; the script prints TODOs for
+   them. See CLAUDE.md for the exact gap.
 3. Copy an existing config (e.g. `config/salisbury.yml`) and paste in the
    generated block, plus hand-curated postcode prefixes and a geocoded
    centroid.
 4. Fill in the `sources:` block for whichever data sources you're
    switching on for this locality.
-5. Push — the Actions workflows pick up the new config automatically.
+5. Run `fetch_lsoa_boundaries.py` if you want choropleth charts for this
+   locality (needs `lsoa_codes` from step 2/3 first).
+6. Run each source's `ingest/` script by hand, then its `pipeline/`
+   companion, and `cd site && npm run build` to check the new locality's
+   pages render before pushing. **Nothing runs this automatically yet** —
+   `.github/workflows/ingest.yml` is a schedule smoke-test only; it
+   doesn't call any ingestion script. Wiring that up is still open work,
+   tracked in CLAUDE.md.
 
 ## Licensing and attribution
 

@@ -5,9 +5,10 @@ bar chart of how many LSOAs fall in each national decile (1-10).
 
 This is /pipeline/, not /ingest/: it reads already-ingested data from
 data/processed/ (written by ingest/imd_deprivation.py) and the boundary
-geometry cached by fetch_lsoa_boundaries.py — it makes no network calls
-and derives no new facts, only different renderings of numbers that
-already exist. Run after ingest/imd_deprivation.py, not instead of it.
+geometry cached by fetch_lsoa_boundaries.py, makes no network calls, and
+also computes this source's one locality-level stat — average_decile —
+writing it back into the same processed file ingest/imd_deprivation.py
+wrote. Run after ingest/imd_deprivation.py, not instead of it.
 
 Colour scale: ColorBrewer's YlOrRd (Yellow-Orange-Red), a published
 colourblind-safe sequential scheme — reversed here so decile 1 (most
@@ -27,6 +28,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from choropleth import interpolate_color, render_choropleth
+from common import latest_processed_path, merge_fields
 
 import yaml
 
@@ -47,14 +49,6 @@ YLORRD_REVERSED = [
 def load_config(config_path: Path) -> dict:
     with open(config_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
-
-
-def latest_processed_file(slug, source_key):
-    d = Path("data/processed") / slug / source_key
-    files = sorted(d.glob("*.json"))
-    if not files:
-        raise FileNotFoundError(f"No processed data in {d} — run ingest/{source_key}.py first.")
-    return json.loads(files[-1].read_text(encoding="utf-8"))
 
 
 def render_distribution_bar(decile_counts, *, title, desc, width=640, height=280, padding=32):
@@ -97,7 +91,8 @@ def main():
     config = load_config(args.config)
     slug = config["locality"]["slug"]
 
-    imd = latest_processed_file(slug, "imd_deprivation")
+    imd_path = latest_processed_path(slug, "imd_deprivation")
+    imd = json.loads(imd_path.read_text(encoding="utf-8"))
     boundaries_path = Path("data/reference") / f"lsoa_boundaries_{slug}.geojson"
     if not boundaries_path.exists():
         raise FileNotFoundError(f"{boundaries_path} not found — run fetch_lsoa_boundaries.py first.")
@@ -164,6 +159,18 @@ def main():
     (out_dir / "choropleth_mini.svg").write_text(choropleth_mini_svg, encoding="utf-8")
     (out_dir / "distribution.svg").write_text(distribution_svg, encoding="utf-8")
     print(f"Wrote choropleth.svg, choropleth_mini.svg, and distribution.svg to {out_dir}")
+
+    # The locality-level summary stat, computed here (not in ingest/) per
+    # CLAUDE.md rule 1 — and from the same decile_counts this file already
+    # built for the distribution chart, rather than a second pass over
+    # imd["lsoas"] that could drift out of sync with it.
+    average_decile = round(sum(decile * count for decile, count in decile_counts.items()) / len(imd["lsoas"]))
+    merge_fields(
+        imd_path,
+        average_decile=average_decile,
+        average_decile_method="unweighted mean of IMD decile across matched LSOAs",
+    )
+    print(f"average_decile = {average_decile} for {slug} ({imd['release']}) in {imd_path}")
 
 
 if __name__ == "__main__":

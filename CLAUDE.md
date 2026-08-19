@@ -17,9 +17,14 @@ data/raw/imd_deprivation/*.xlsx             cached raw IMD file (source for imd_
 data/raw/{police_crime,ons_population,companies_house}/salisbury/*.json  cached raw API pulls
 data/processed/salisbury/{police_crime,ons_population,imd_deprivation}/*.json  live sources
 data/processed/salisbury/imd_deprivation/charts/*.svg  pipeline-generated IMD charts
-ingest/{police_crime,ons_population,companies_house,imd_deprivation}.py  four ingestion scripts
+ingest/{police_crime,ons_population,companies_house,imd_deprivation}.py  four ingestion scripts —
+                                            fetch + filter only, no computation (rule 1)
+pipeline/common.py                         shared read-latest / merge-fields-back-in helpers
+pipeline/{police_crime,ons_population,companies_house}_stats.py  compute this source's
+                                            derived field(s), merged into ingest/'s output file
 pipeline/choropleth.py                     shared, source-agnostic LSOA choropleth renderer
-pipeline/imd_charts.py                     IMD-specific: calls choropleth.py + a distribution bar
+pipeline/imd_charts.py                     IMD-specific: choropleth.py + distribution bar +
+                                            average_decile (IMD's stats script, effectively)
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
 .github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
 site/                                        Eleventy site — homepage + one page per live source
@@ -228,6 +233,69 @@ Extending the script to cover steps 4–6 is a reasonable next task; when you
 do, update both the script's docstring and that config comment together so
 they stop disagreeing.
 
+**Portability/discipline audit (all four findings fixed in this pass):**
+A review session read CLAUDE.md, README, and ANALYSIS_CHARTS_SPEC.md
+against the actual code across the five sessions since the site was
+built, and found real drift in four places. All four are fixed now, but
+the *pattern* each fix establishes matters more than the specific fix —
+read this before adding a fifth source or a second locality:
+
+1. **Every ingest script computed at least one derived number itself**
+   (`imd_deprivation.py`'s `average_decile`, `ons_population.py`'s
+   `population` total, `companies_house.py`'s `active_count`,
+   `police_crime.py`'s `crime_count`) — rule 1 puts computation in
+   `/pipeline/`, and none of it was. Fixed by splitting every source into
+   two scripts that both write into the *same* `data/processed/` file:
+   `ingest/<source>.py` writes fetched-and-filtered facts only (a list —
+   crimes, companies, per-LSOA rows), then `pipeline/<source>_stats.py`
+   reads that file and merges the derived field(s) back into it via the
+   new `pipeline/common.py` (`latest_processed_path` + `merge_fields`).
+   IMD's derived field lives in `pipeline/imd_charts.py` instead of a
+   separate `imd_deprivation_stats.py`, since that file already computed
+   an equivalent decile breakdown for the distribution chart — before
+   this fix, that was two independent computations over the same data in
+   two different layers; now there's one. **A source isn't finished
+   until both its `ingest/` and `pipeline/` scripts have been run** — the
+   site can't show a source's figure from `ingest/` output alone anymore.
+   `site/src/_data/homeCards.js`'s formatters check for the specific
+   pipeline-written field (e.g. `latest.population === undefined`) and
+   return `null` — rendering SOON, not a broken `undefined` — if
+   `pipeline/` hasn't run yet; this is what makes the two-step sequence
+   safe to get wrong instead of silently showing garbage.
+2. **Two different config field names meant the same thing.**
+   `ons_population`/`imd_deprivation` used `geography_key` (a pointer to
+   *which* `config.geography.*` field to filter by — for sources doing
+   simple list-membership); `police_crime`/`companies_house` used
+   `filter_by` instead. Unified: `geography_key` is now the only field
+   for list-membership filtering (`companies_house` and the not-yet-built
+   `local_elections` were switched onto it, since `postcode_prefixes` and
+   `wards` are both single-list lookups, same as `lsoa_codes`).
+   `police_crime` keeps a separate field, renamed `filter_method` (not
+   `geography_key`) — deliberately, since radius filtering needs
+   `centroid` *and* `radius_km` together, an algorithm rather than one
+   list. **When adding a new source**: if it matches against one
+   `geography.*` list, use `geography_key`; only introduce a second
+   `filter_method`-style field if the filtering genuinely needs more than
+   one geography field or a choice of algorithm — don't default to
+   inventing a new field name per source.
+3. **`site/src/_includes/base.njk`'s logo path was hardcoded** —
+   the one real rule-2 violation the audit found. Fixed the same way
+   `hero_image` already was: `config.site.logo` now holds the path,
+   templated through `| url` like every other asset reference.
+4. **Documentation had drifted from the code in several places** — see
+   the README's repo structure tree, data sources table (now two rows
+   for `council_transparency`/`planning_register`, since they're
+   independent config sources, not one), and "Getting started" (now
+   discloses that nothing runs automatically yet, and exactly which
+   `generate_locality_geography.py` steps are still manual). Also:
+   **a documentation PR from an earlier session (`document-council-
+   transparency-cloudflare-blocker`, #7) was opened but never merged** —
+   closed instead. Its `config/salisbury.yml` URL fix and column_map
+   honesty note were redone directly in this pass since they were still
+   correct and still needed; if you find other unmerged-but-still-valid
+   work in closed PRs, the same applies — don't assume "closed" always
+   means "superseded," check what it actually contained.
+
 ## Environment setup
 
 This project uses **uv** to manage Python, not the system `python3`. On
@@ -275,12 +343,15 @@ uv run generate_locality_geography.py \
 
 # Ingestion: police.uk crime data for one locality, filtered by centroid + radius_km
 uv run ingest/police_crime.py --config config/salisbury.yml
+uv run pipeline/police_crime_stats.py --config config/salisbury.yml   # computes crime_count
 
 # Ingestion: ONS small-area mid-year population estimate (via Nomis), summed across lsoa_codes
 uv run ingest/ons_population.py --config config/salisbury.yml
+uv run pipeline/ons_population_stats.py --config config/salisbury.yml   # computes population
 
-# Ingestion: Companies House, filtered by postcode_prefixes — needs COMPANIES_HOUSE_API_KEY
+# Ingestion: Companies House, filtered by geography_key (postcode_prefixes) — needs COMPANIES_HOUSE_API_KEY
 COMPANIES_HOUSE_API_KEY=... uv run ingest/companies_house.py --config config/salisbury.yml
+uv run pipeline/companies_house_stats.py --config config/salisbury.yml   # computes the counts
 
 # Ingestion: IMD, joined against lsoa_codes — no network call, reads data/raw/imd_deprivation/*.xlsx
 uv run ingest/imd_deprivation.py --config config/salisbury.yml
@@ -288,7 +359,7 @@ uv run ingest/imd_deprivation.py --config config/salisbury.yml
 # Onboarding: cache LSOA boundary geometry for choropleths (one-off, like generate_locality_geography.py)
 uv run fetch_lsoa_boundaries.py --config config/salisbury.yml
 
-# Pipeline: IMD choropleth + distribution bar charts — run after ingest/imd_deprivation.py
+# Pipeline: IMD choropleth + distribution bar charts + average_decile — run after ingest/imd_deprivation.py
 uv run pipeline/imd_charts.py --config config/salisbury.yml
 
 # Site: build the Eleventy site (homepage + one page per live source) from data/processed/

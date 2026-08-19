@@ -25,7 +25,7 @@
   <header class="site-header">
     <div class="site-header__bar">
       <a class="brand" href="{{ '/' | url }}">
-        <img src="{{ '/assets/logo-salisbury.jpg' | url }}" alt="{{ config.narrative.project_name }} logo">
+        <img src="{{ ('/' ~ config.site.logo) | url }}" alt="{{ config.narrative.project_name }} logo">
         <span class="brand__name">{{ config.narrative.project_name }}</span>
       </a>
 
