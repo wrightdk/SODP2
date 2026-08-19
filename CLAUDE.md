@@ -60,13 +60,12 @@ Data flows into templates through `site/src/_data/`:
 Two known gaps from this pass, both flagged rather than silently
 patched:
 - `config/salisbury.yml`'s `site.hero_image` points at
-  `assets/hero-salisbury.jpg`, but that file isn't in the repo — the
-  Claude Design MCP's `get_file` truncates anything over 256 KiB and the
-  hero photo exceeds that, so it couldn't be pulled in. The homepage
-  falls back to a plain `--accent-dark` background until someone adds the
-  real file at `site/src/assets/hero-salisbury.jpg`. `hero_image_credit`
-  is still the literal placeholder text from the handoff note — fill in
-  real attribution before this goes live.
+  `site/src/assets/hero-salisbury.jpg`, which is now in the repo (added
+  by hand — the Claude Design MCP's `get_file` truncates anything over
+  256 KiB, so the automated fetch of this photo came back incomplete and
+  couldn't be used). `hero_image_credit` is still the literal placeholder
+  text from the handoff note — fill in real attribution before this goes
+  live.
 - `site/src/_includes/base.njk` hardcodes the logo path
   (`/assets/logo-salisbury.jpg`) rather than reading it from config —
   inconsistent with rule 2 below, but out of scope for this session since
