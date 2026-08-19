@@ -1,0 +1,19 @@
+name: Scheduled ingest
+
+# Weekly smoke test only, for now: confirms the Actions schedule fires and
+# a job can run to completion. It does not run any ingestion script yet —
+# ingest/police_crime.py is invoked by hand until a later session wires it
+# in here. See CLAUDE.md, rule 5, for why generate_locality_geography.py
+# must never be added to this workflow.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # every Monday, 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm the workflow can execute
+        run: echo "Scheduled workflow ran successfully at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
