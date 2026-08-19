@@ -1,4 +1,4 @@
-# [Project name TBD] — local open data, decoded
+# Local Open Data Project — local open data, decoded
 
 A pipeline that pulls public UK datasets, filters them to a single town or
 city, and turns the results into short, human-reviewed articles — automated
