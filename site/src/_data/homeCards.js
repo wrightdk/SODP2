@@ -14,10 +14,10 @@ const CARD_META = {
   ons_population: {
     title: "Population & Economy",
     page: "/population/",
-    // LAD-level, not BUA-level — say so plainly. README's own framing
-    // (LAD boundaries != a town's actual boundary) is exactly why this
-    // needs the caveat rather than implying it's Salisbury-the-town.
-    desc: (c) => `ONS mid-year population estimate for ${c.geography.county || c.locality.region}, the local authority covering ${c.locality.name} — authority-wide, not filtered to the built-up area itself.`,
+    // LSOA-level (summed across the BUA's actual LSOA membership), not
+    // local-authority-level — this used to report Wiltshire's population
+    // (~500k) instead of Salisbury's. See CLAUDE.md.
+    desc: (c) => `ONS small-area mid-year population estimate summed across ${c.locality.name}'s ${(c.geography.lsoa_codes || []).length} LSOAs.`,
   },
   police_crime: {
     title: "Police & Crime",

@@ -113,10 +113,15 @@ sources:
 
   ons_population:
     enabled: true
-    geography_key: local_authority_codes  # tells the script which field above to use
-                                           # (a list now — script should union across it
-                                           # if a BUA straddles more than one LAD)
-    update_frequency: "quarterly"
+    geography_key: lsoa_codes             # was local_authority_codes, which summed to
+                                           # Wiltshire's whole population (~500k), not
+                                           # Salisbury's — matches imd_deprivation's pattern
+                                           # now: sum ONS small-area estimates across the
+                                           # BUA's actual LSOA membership instead
+    update_frequency: "annual"            # small-area (LSOA) estimates are published once
+                                           # a year, and lag ~1 year behind the district-level
+                                           # mid-year estimates this used to read — not
+                                           # quarterly, that was never correct for either
 
   police_crime:
     enabled: true

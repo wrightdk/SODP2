@@ -1,0 +1,1574 @@
+{
+  "source_url": "https://www.nomisweb.co.uk/api/v01/dataset/NM_2014_1.data.json?geography=E01031980%2CE01031981%2CE01031982%2CE01031983%2CE01031984%2CE01031985%2CE01031986%2CE01032001%2CE01032002%2CE01032003%2CE01032005%2CE01032006%2CE01032008%2CE01032009%2CE01032012%2CE01032014%2CE01032015%2CE01032016%2CE01032017%2CE01032018%2CE01032019%2CE01032020%2CE01032021%2CE01032022%2CE01032023%2CE01032024%2CE01032025%2CE01034550&date=latest&gender=0&c_age=0&measures=20100",
+  "fetched_at": "2026-08-19T21:20:28Z",
+  "obs": [
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031980",
+        "description": "Wiltshire 052A",
+        "geogcode": "E01031980"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 3845,
+        "description": "Persons Value for Wiltshire 052A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370260d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031981",
+        "description": "Wiltshire 052B",
+        "geogcode": "E01031981"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1583,
+        "description": "Persons Value for Wiltshire 052B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370261d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031982",
+        "description": "Wiltshire 052C",
+        "geogcode": "E01031982"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1355,
+        "description": "Persons Value for Wiltshire 052C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370262d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031983",
+        "description": "Wiltshire 052D",
+        "geogcode": "E01031983"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1938,
+        "description": "Persons Value for Wiltshire 052D (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370263d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031984",
+        "description": "Wiltshire 051A",
+        "geogcode": "E01031984"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 2894,
+        "description": "Persons Value for Wiltshire 051A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370264d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031985",
+        "description": "Wiltshire 051B",
+        "geogcode": "E01031985"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1297,
+        "description": "Persons Value for Wiltshire 051B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370265d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01031986",
+        "description": "Wiltshire 051C",
+        "geogcode": "E01031986"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1219,
+        "description": "Persons Value for Wiltshire 051C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370266d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032001",
+        "description": "Wiltshire 055A",
+        "geogcode": "E01032001"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1492,
+        "description": "Persons Value for Wiltshire 055A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370279d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032002",
+        "description": "Wiltshire 055B",
+        "geogcode": "E01032002"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1376,
+        "description": "Persons Value for Wiltshire 055B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370280d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032003",
+        "description": "Wiltshire 055C",
+        "geogcode": "E01032003"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1880,
+        "description": "Persons Value for Wiltshire 055C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370281d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032005",
+        "description": "Wiltshire 059A",
+        "geogcode": "E01032005"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1342,
+        "description": "Persons Value for Wiltshire 059A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370283d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032006",
+        "description": "Wiltshire 059B",
+        "geogcode": "E01032006"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1179,
+        "description": "Persons Value for Wiltshire 059B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370284d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032008",
+        "description": "Wiltshire 058A",
+        "geogcode": "E01032008"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1399,
+        "description": "Persons Value for Wiltshire 058A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370286d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032009",
+        "description": "Wiltshire 058B",
+        "geogcode": "E01032009"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1805,
+        "description": "Persons Value for Wiltshire 058B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370287d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032012",
+        "description": "Wiltshire 057C",
+        "geogcode": "E01032012"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1781,
+        "description": "Persons Value for Wiltshire 057C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370289d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032014",
+        "description": "Wiltshire 056A",
+        "geogcode": "E01032014"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 2069,
+        "description": "Persons Value for Wiltshire 056A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370291d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032015",
+        "description": "Wiltshire 056B",
+        "geogcode": "E01032015"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1337,
+        "description": "Persons Value for Wiltshire 056B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370292d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032016",
+        "description": "Wiltshire 056C",
+        "geogcode": "E01032016"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1324,
+        "description": "Persons Value for Wiltshire 056C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370293d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032017",
+        "description": "Wiltshire 051D",
+        "geogcode": "E01032017"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1483,
+        "description": "Persons Value for Wiltshire 051D (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370294d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032018",
+        "description": "Wiltshire 053A",
+        "geogcode": "E01032018"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1587,
+        "description": "Persons Value for Wiltshire 053A (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370295d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032019",
+        "description": "Wiltshire 053B",
+        "geogcode": "E01032019"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1399,
+        "description": "Persons Value for Wiltshire 053B (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370296d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032020",
+        "description": "Wiltshire 053C",
+        "geogcode": "E01032020"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1451,
+        "description": "Persons Value for Wiltshire 053C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370297d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032021",
+        "description": "Wiltshire 056D",
+        "geogcode": "E01032021"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1638,
+        "description": "Persons Value for Wiltshire 056D (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370298d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032022",
+        "description": "Wiltshire 058C",
+        "geogcode": "E01032022"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1759,
+        "description": "Persons Value for Wiltshire 058C (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370299d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032023",
+        "description": "Wiltshire 059D",
+        "geogcode": "E01032023"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1791,
+        "description": "Persons Value for Wiltshire 059D (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370300d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032024",
+        "description": "Wiltshire 055D",
+        "geogcode": "E01032024"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 2436,
+        "description": "Persons Value for Wiltshire 055D (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370301d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01032025",
+        "description": "Wiltshire 053D",
+        "geogcode": "E01032025"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1407,
+        "description": "Persons Value for Wiltshire 053D (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633370302d0d0d20100"
+    },
+    {
+      "dataset": {
+        "value": "NM_2014_1",
+        "description": "Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "geography": {
+        "value": "E01034550",
+        "description": "Wiltshire 057G",
+        "geogcode": "E01034550"
+      },
+      "gender": {
+        "value": 0,
+        "description": "Total"
+      },
+      "c_age": {
+        "value": 0,
+        "description": "All Ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "PER",
+        "description": "Persons"
+      },
+      "time": {
+        "value": 2024,
+        "description": 2024
+      },
+      "obs_value": {
+        "value": 1168,
+        "description": "Persons Value for Wiltshire 057G (geography) for 2024 from Population estimates - small area (2021 based) by single year of age - England and Wales"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-2014d1d32384e0d633372493d0d0d20100"
+    }
+  ]
+}
