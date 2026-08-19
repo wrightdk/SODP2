@@ -6,9 +6,8 @@ isPopulation: true
 <div class="section" style="padding-bottom:56px;">
   <h1>Population &amp; Economy</h1>
   <p class="section__intro">
-    ONS mid-year population estimates via Nomis, summed across each local authority
-    covering the locality — this is authority-level data (e.g. the whole of Wiltshire),
-    not filtered down to the built-up area the way police crime data is.
+    ONS small-area mid-year population estimates via Nomis, summed across the locality's
+    LSOAs — filtered to the built-up area itself, not the wider local authority.
   </p>
 
   {% for locality in populationLocalities %}
@@ -17,7 +16,7 @@ isPopulation: true
     <h2 style="font-size:22px;">{{ locality.slug }} — mid-{{ data.year }}</h2>
     <p style="color:var(--text-muted);margin-top:8px;">
       {{ data.population }} residents across
-      {{ data.by_authority.length }} local authorit{{ "y" if data.by_authority.length == 1 else "ies" }}.
+      {{ data.by_lsoa.length }} LSOA{{ "s" if data.by_lsoa.length != 1 }}.
       Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
       fetched {{ data.fetched_at }}.
       <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
@@ -26,17 +25,17 @@ isPopulation: true
       <table style="width:100%;font-size:13.5px;">
         <thead>
           <tr>
-            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Local authority</th>
-            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">ONS code</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">LSOA</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Code</th>
             <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Population</th>
           </tr>
         </thead>
         <tbody>
-          {% for authority in data.by_authority %}
+          {% for lsoa in data.by_lsoa %}
           <tr>
-            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ authority.name }}</td>
-            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ authority.code }}</td>
-            <td style="padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;">{{ authority.population }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ lsoa.name }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ lsoa.code }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;">{{ lsoa.population }}</td>
           </tr>
           {% endfor %}
         </tbody>

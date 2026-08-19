@@ -72,16 +72,20 @@ Data flows into templates through `site/src/_data/`:
   these hardcode "salisbury" even though it's the only locality with data
   today — follow the same pattern for the next source.
 
-**ons_population is authority-level, not town-level, and the homepage
-card says so.** There's no simple API for Salisbury-the-built-up-area's
-population specifically — Nomis (the ONS/Durham service this uses)
-publishes local-authority-level estimates, so the figure shown is
-Wiltshire's whole population (526,392), not Salisbury's. This is the
-same "Wiltshire vs Salisbury" problem the README calls out as this
-project's central design decision, just unsolved for this one source —
-don't quietly relabel the card copy to imply it's town-level; if this
-needs fixing, it means summing LSOA-level (not LAD-level) population
-estimates instead, a bigger change than this session's scope.
+**ons_population is now LSOA-level, matching imd_deprivation's pattern**
+— it originally summed `local_authority_codes` (Wiltshire's whole
+population, 526,392, the same "Wiltshire vs Salisbury" problem the
+README calls out as this project's central design decision), fixed to
+sum Nomis's small-area estimates (dataset `NM_2014_1`, not `NM_31_1`)
+across `lsoa_codes` instead — 47,234 for Salisbury. Small-area estimates
+lag district-level ones by about a year (confirmed live: district-level
+"latest" was already mid-2025 while small-area "latest" was still
+mid-2024) and publish annually, not quarterly — `update_frequency` in
+config reflects that now. If a future source needs local-authority-wide
+figures on purpose (e.g. something that's genuinely a county-level
+statistic), that's a legitimate use of `local_authority_codes` — the
+problem was never the field existing, just defaulting to it for a
+figure that's supposed to represent the town.
 
 **companies_house.py needs `COMPANIES_HOUSE_API_KEY`** (HTTP Basic auth,
 get one free at developer.company-information.service.gov.uk) — verified
@@ -182,7 +186,7 @@ uv run generate_locality_geography.py \
 # Ingestion: police.uk crime data for one locality, filtered by centroid + radius_km
 uv run ingest/police_crime.py --config config/salisbury.yml
 
-# Ingestion: ONS mid-year population estimate (via Nomis), summed across local_authority_codes
+# Ingestion: ONS small-area mid-year population estimate (via Nomis), summed across lsoa_codes
 uv run ingest/ons_population.py --config config/salisbury.yml
 
 # Ingestion: Companies House, filtered by postcode_prefixes — needs COMPANIES_HOUSE_API_KEY

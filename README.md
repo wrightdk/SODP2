@@ -97,7 +97,7 @@ geography generator script, not just a new config file.
 
 | Source | Coverage | Notes |
 |---|---|---|
-| ONS population/economic stats | UK-wide | Filtered via `local_authority_codes` |
+| ONS population/economic stats | UK-wide | Filtered via `lsoa_codes` (small-area estimates, summed across the BUA — not `local_authority_codes`, which would report the whole council area) |
 | Police.uk crime data | England, Wales, NI | Filtered via `centroid` + `radius_km` |
 | Companies House | UK-wide | Filtered via `postcode_prefixes` |
 | Index of Multiple Deprivation | England only (Wales has a separate, non-comparable WIMD) | Filtered via `lsoa_codes`; a per-LSOA table, not a single locality value — see config comments |

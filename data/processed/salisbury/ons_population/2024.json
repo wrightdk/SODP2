@@ -1,0 +1,183 @@
+{
+  "source_url": "https://www.nomisweb.co.uk/api/v01/dataset/NM_2014_1.data.json?geography=E01031980%2CE01031981%2CE01031982%2CE01031983%2CE01031984%2CE01031985%2CE01031986%2CE01032001%2CE01032002%2CE01032003%2CE01032005%2CE01032006%2CE01032008%2CE01032009%2CE01032012%2CE01032014%2CE01032015%2CE01032016%2CE01032017%2CE01032018%2CE01032019%2CE01032020%2CE01032021%2CE01032022%2CE01032023%2CE01032024%2CE01032025%2CE01034550&date=latest&gender=0&c_age=0&measures=20100",
+  "api_docs_url": "https://www.nomisweb.co.uk/api/v01/about",
+  "fetched_at": "2026-08-19T21:20:28Z",
+  "locality": "salisbury",
+  "year": 2024,
+  "filter": {
+    "method": "lsoa_codes",
+    "lsoa_codes": [
+      "E01031980",
+      "E01031981",
+      "E01031982",
+      "E01031983",
+      "E01031984",
+      "E01031985",
+      "E01031986",
+      "E01032001",
+      "E01032002",
+      "E01032003",
+      "E01032005",
+      "E01032006",
+      "E01032008",
+      "E01032009",
+      "E01032012",
+      "E01032014",
+      "E01032015",
+      "E01032016",
+      "E01032017",
+      "E01032018",
+      "E01032019",
+      "E01032020",
+      "E01032021",
+      "E01032022",
+      "E01032023",
+      "E01032024",
+      "E01032025",
+      "E01034550"
+    ]
+  },
+  "population": 47234,
+  "by_lsoa": [
+    {
+      "code": "E01031980",
+      "name": "Wiltshire 052A",
+      "population": 3845
+    },
+    {
+      "code": "E01031981",
+      "name": "Wiltshire 052B",
+      "population": 1583
+    },
+    {
+      "code": "E01031982",
+      "name": "Wiltshire 052C",
+      "population": 1355
+    },
+    {
+      "code": "E01031983",
+      "name": "Wiltshire 052D",
+      "population": 1938
+    },
+    {
+      "code": "E01031984",
+      "name": "Wiltshire 051A",
+      "population": 2894
+    },
+    {
+      "code": "E01031985",
+      "name": "Wiltshire 051B",
+      "population": 1297
+    },
+    {
+      "code": "E01031986",
+      "name": "Wiltshire 051C",
+      "population": 1219
+    },
+    {
+      "code": "E01032001",
+      "name": "Wiltshire 055A",
+      "population": 1492
+    },
+    {
+      "code": "E01032002",
+      "name": "Wiltshire 055B",
+      "population": 1376
+    },
+    {
+      "code": "E01032003",
+      "name": "Wiltshire 055C",
+      "population": 1880
+    },
+    {
+      "code": "E01032005",
+      "name": "Wiltshire 059A",
+      "population": 1342
+    },
+    {
+      "code": "E01032006",
+      "name": "Wiltshire 059B",
+      "population": 1179
+    },
+    {
+      "code": "E01032008",
+      "name": "Wiltshire 058A",
+      "population": 1399
+    },
+    {
+      "code": "E01032009",
+      "name": "Wiltshire 058B",
+      "population": 1805
+    },
+    {
+      "code": "E01032012",
+      "name": "Wiltshire 057C",
+      "population": 1781
+    },
+    {
+      "code": "E01032014",
+      "name": "Wiltshire 056A",
+      "population": 2069
+    },
+    {
+      "code": "E01032015",
+      "name": "Wiltshire 056B",
+      "population": 1337
+    },
+    {
+      "code": "E01032016",
+      "name": "Wiltshire 056C",
+      "population": 1324
+    },
+    {
+      "code": "E01032017",
+      "name": "Wiltshire 051D",
+      "population": 1483
+    },
+    {
+      "code": "E01032018",
+      "name": "Wiltshire 053A",
+      "population": 1587
+    },
+    {
+      "code": "E01032019",
+      "name": "Wiltshire 053B",
+      "population": 1399
+    },
+    {
+      "code": "E01032020",
+      "name": "Wiltshire 053C",
+      "population": 1451
+    },
+    {
+      "code": "E01032021",
+      "name": "Wiltshire 056D",
+      "population": 1638
+    },
+    {
+      "code": "E01032022",
+      "name": "Wiltshire 058C",
+      "population": 1759
+    },
+    {
+      "code": "E01032023",
+      "name": "Wiltshire 059D",
+      "population": 1791
+    },
+    {
+      "code": "E01032024",
+      "name": "Wiltshire 055D",
+      "population": 2436
+    },
+    {
+      "code": "E01032025",
+      "name": "Wiltshire 053D",
+      "population": 1407
+    },
+    {
+      "code": "E01034550",
+      "name": "Wiltshire 057G",
+      "population": 1168
+    }
+  ]
+}
