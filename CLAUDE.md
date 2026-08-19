@@ -11,13 +11,13 @@ pushed to a remote). What's actually built vs. still just scaffolding:
 config/salisbury.yml                       the only locality config so far
 generate_locality_geography.py             onboarding script (v2, "small lookups" approach)
 data/reference/*.csv, *.xlsx                cached ONS geography lookups
-data/raw/imd_deprivation/*.xlsx             cached raw IMD file (not yet ingested by any script)
-data/raw/police_crime/salisbury/*.json      cached raw police.uk pulls, one file per month
-data/processed/salisbury/police_crime/*.json  ingested + provenance-tagged output
-ingest/police_crime.py                      the only ingestion script written so far
+data/raw/imd_deprivation/*.xlsx             cached raw IMD file (source for imd_deprivation)
+data/raw/{police_crime,ons_population,companies_house}/salisbury/*.json  cached raw API pulls
+data/processed/salisbury/{police_crime,ons_population,imd_deprivation}/*.json  live sources
+ingest/{police_crime,ons_population,companies_house,imd_deprivation}.py  four ingestion scripts
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
 .github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
-site/                                        Eleventy site — real homepage + a bare /crime/ prototype page
+site/                                        Eleventy site — homepage + one page per live source
 requirements.txt, .venv/                    see "Environment setup"
 pipeline/, narrative/                       empty (.gitkeep only) — not started
 ```
@@ -36,11 +36,23 @@ check before referencing a path there.
 
 `site/src/index.njk` is the real homepage, built from an exported Claude
 Design mockup (see DESIGN_HANDOFF_NOTES.md — the four required changes
-listed there are implemented). `site/src/crime.njk` (`/crime/`) is still
-the bare Phase 2 prototype table, now wrapped in the same header/footer —
-it exists only because the homepage's one live card needs somewhere real
-to link to; it's not the "Crime & Safety" page design (that page wasn't
-in scope and isn't built).
+listed there are implemented). Each live source also has its own detail
+page — `crime.njk` (`/crime/`, still the bare Phase 2 table), plus
+`population.njk` (`/population/`), `companies.njk` (`/companies/`), and
+`deprivation.njk` (`/deprivation/`) added in the same session as their
+ingestion scripts. None of these are final page designs (no "Crime &
+Safety"-style layout was ever built) — they're all the same plain
+pattern: source link, fetched timestamp, a table, and a "download the
+raw JSON" link. `eleventy.config.js` copies `data/processed/` to
+`_site/data/` so those download links resolve to something real. This
+site deploys to a GitHub Pages *project* subpath (`/SODP2/`, not the
+domain root) — `eleventy.config.js` sets `pathPrefix` from a
+`PATH_PREFIX` env var (only `deploy.yml`'s CI build sets it; local
+build/serve default to `/`), and every internal `href`/`src` in every
+template must go through Nunjucks's `| url` filter to pick that up. A
+hardcoded `/foo` path works locally and 404s in production — this
+already broke the deploy once (see git history), so don't reintroduce
+it in a new template.
 
 Data flows into templates through `site/src/_data/`:
 - `config.js` reads whichever `.yml` file it finds first under `/config/`
@@ -50,14 +62,49 @@ Data flows into templates through `site/src/_data/`:
   figure if its source is `enabled: true` in config **and**
   `data/processed/<slug>/<source-key>/*.json` exists — otherwise SOON.
   Adding real numbers for a new source means adding a formatter to
-  `FIGURE_FORMATTERS` in that file, not just dropping data on disk.
-- `localities.js` (from Phase 2) still walks every subdirectory of
-  `/data/processed/` for the `/crime/` page, so it doesn't hardcode
-  "salisbury" even though that's the only locality with data today.
-  Follow that pattern for any new per-locality data you wire into the
-  site.
+  `FIGURE_FORMATTERS` (and a `page` entry in `CARD_META`) in that file,
+  not just dropping data on disk.
+- `localities.js`, `populationLocalities.js`, `companiesLocalities.js`,
+  and `deprivationLocalities.js` each walk every subdirectory of
+  `/data/processed/` for their one source, via the shared
+  `site/src/_helpers/sourceData.js` (deliberately outside `_data/` so
+  Eleventy doesn't try to load it as its own global data value). None of
+  these hardcode "salisbury" even though it's the only locality with data
+  today — follow the same pattern for the next source.
 
-Two known gaps from this pass, both flagged rather than silently
+**ons_population is authority-level, not town-level, and the homepage
+card says so.** There's no simple API for Salisbury-the-built-up-area's
+population specifically — Nomis (the ONS/Durham service this uses)
+publishes local-authority-level estimates, so the figure shown is
+Wiltshire's whole population (526,392), not Salisbury's. This is the
+same "Wiltshire vs Salisbury" problem the README calls out as this
+project's central design decision, just unsolved for this one source —
+don't quietly relabel the card copy to imply it's town-level; if this
+needs fixing, it means summing LSOA-level (not LAD-level) population
+estimates instead, a bigger change than this session's scope.
+
+**companies_house.py needs `COMPANIES_HOUSE_API_KEY`** (HTTP Basic auth,
+get one free at developer.company-information.service.gov.uk) — verified
+live against Salisbury's SP1/SP2 prefixes (10,673 companies, 5,247
+active). Keep the key in a local `.env` (already gitignored) and export
+it into the shell before running the script — never pass it as a
+literal value in a command, since that would put it in shell/session
+history.
+
+**`config/salisbury.yml`'s `lsoa_codes` only had 3 of Salisbury's 28
+LSOAs** until this session — found while building `imd_deprivation.py`
+(a partial list was silently understating the IMD figure: decile 4 from
+3 LSOAs vs. the correct decile 7 from all 28). Regenerated from
+`generate_locality_geography.py`'s own BUA-matching logic and fixed in
+config. If `lsoa_codes` (or `local_authority_codes`) ever look suspiciously
+short for a locality, verify against the BUA lookup file rather than
+assuming they're complete — `generate_locality_geography.py` itself
+currently can't be run end-to-end to double check: `load_police_force()`
+opens the PFA lookup with `csv.DictReader`, but that lookup ships as
+`.xlsx`, not `.csv` — pre-existing bug, not touched this session since
+LAD/LSOA resolution (the part that mattered here) doesn't depend on it.
+
+Two known gaps from an earlier pass, both flagged rather than silently
 patched:
 - `config/salisbury.yml`'s `site.hero_image` points at
   `site/src/assets/hero-salisbury.jpg`, which is now in the repo (added
@@ -135,7 +182,16 @@ uv run generate_locality_geography.py \
 # Ingestion: police.uk crime data for one locality, filtered by centroid + radius_km
 uv run ingest/police_crime.py --config config/salisbury.yml
 
-# Site: build the Eleventy prototype from whatever's in data/processed/
+# Ingestion: ONS mid-year population estimate (via Nomis), summed across local_authority_codes
+uv run ingest/ons_population.py --config config/salisbury.yml
+
+# Ingestion: Companies House, filtered by postcode_prefixes — needs COMPANIES_HOUSE_API_KEY
+COMPANIES_HOUSE_API_KEY=... uv run ingest/companies_house.py --config config/salisbury.yml
+
+# Ingestion: IMD, joined against lsoa_codes — no network call, reads data/raw/imd_deprivation/*.xlsx
+uv run ingest/imd_deprivation.py --config config/salisbury.yml
+
+# Site: build the Eleventy site (homepage + one page per live source) from data/processed/
 cd site && npm install   # first time only, or after package.json changes
 cd site && npm run build # writes site/_site/
 cd site && npm run serve # local dev server with live reload
@@ -143,10 +199,16 @@ cd site && npm run serve # local dev server with live reload
 
 `generate_locality_geography.py` takes no other arguments and has no test
 coverage — verify its output by hand against the source lookup files when
-changing it. `ingest/police_crime.py` caches raw pulls under
-`data/raw/police_crime/<slug>/<month>.json` and re-uses that cache instead
-of re-fetching; pass `--force` to bypass it, `--month YYYY-MM` to fetch a
-specific month instead of the latest available.
+changing it (and see the PFA-lookup `.xlsx`-read-as-`.csv` bug noted
+above if you need `load_police_force()` to actually run). Each ingest
+script caches its own way, matching its source's actual update cadence:
+`police_crime.py` and `ons_population.py` cache by the resolved
+month/year (`--month`/`--year` to override, `--force` to bypass);
+`companies_house.py` caches by calendar month per config's declared
+`update_frequency` (there's no clean natural snapshot boundary in a
+continuously-updated register); `imd_deprivation.py` makes no network
+call at all, so there's nothing to cache — it just re-parses the
+already-cached `data/raw/imd_deprivation/*.xlsx` every run.
 
 There is no lint or test suite yet. When `/pipeline/` or `/narrative/` get
 code, add their run/test commands here rather than leaving future sessions

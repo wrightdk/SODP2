@@ -1,6 +1,9 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/styles.css");
+  // Serves data/processed/ at /data/ so source pages can link a real
+  // "download the JSON" file, not just describe the data.
+  eleventyConfig.addPassthroughCopy({ "../data/processed": "data" });
 
   return {
     // Project Pages serves this site at /SODP2/, not the domain root.

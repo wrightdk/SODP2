@@ -1,0 +1,62 @@
+{
+  "source_url": "https://www.nomisweb.co.uk/api/v01/dataset/NM_31_1.data.json?geography=E06000054&date=latest&sex=7&age=0&measures=20100",
+  "fetched_at": "2026-08-19T20:53:32Z",
+  "obs": [
+    {
+      "dataset": {
+        "value": "NM_31_1",
+        "description": "Population estimates - local authority based by five year age band"
+      },
+      "geography": {
+        "value": "E06000054",
+        "description": "Wiltshire",
+        "geogcode": "E06000054"
+      },
+      "sex": {
+        "value": 7,
+        "description": "Total"
+      },
+      "age": {
+        "value": 0,
+        "description": "All ages"
+      },
+      "measures": {
+        "value": 20100,
+        "description": "Value"
+      },
+      "freq": {
+        "value": "A",
+        "description": "Annually"
+      },
+      "time_format": {
+        "value": "P1Y",
+        "description": "Annual"
+      },
+      "unit": {
+        "value": "X",
+        "description": "Undefined"
+      },
+      "time": {
+        "value": 2025,
+        "description": 2025
+      },
+      "obs_value": {
+        "value": 526392,
+        "description": "Undefined Value for Wiltshire (geography) for 2025 from Population estimates - local authority based by five year age band"
+      },
+      "obs_status": {
+        "value": "A",
+        "description": "Normal Value"
+      },
+      "obs_conf": {
+        "value": "F",
+        "description": "Free (free for publication)"
+      },
+      "obs_round": {
+        "value": 1,
+        "description": "Rounded to 1"
+      },
+      "urn": "Nm-31d1d32400e0d1774190643d7d0d20100"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "source_url": "https://www.gov.uk/government/statistics/english-indices-of-deprivation-2025",
+  "fetched_at": "2026-08-19T17:04:43Z",
+  "locality": "salisbury",
+  "release": "IoD2025",
+  "filter": {
+    "method": "lsoa_codes",
+    "lsoa_code_count": 28
+  },
+  "average_decile": 7,
+  "average_decile_method": "unweighted mean of IMD decile across matched LSOAs",
+  "lsoa_count_matched": 28,
+  "lsoas": [
+    {
+      "lsoa_code": "E01031980",
+      "lsoa_name": "Wiltshire 052A",
+      "imd_rank": 13947,
+      "imd_decile": 5
+    },
+    {
+      "lsoa_code": "E01031981",
+      "lsoa_name": "Wiltshire 052B",
+      "imd_rank": 5467,
+      "imd_decile": 2
+    },
+    {
+      "lsoa_code": "E01031982",
+      "lsoa_name": "Wiltshire 052C",
+      "imd_rank": 15919,
+      "imd_decile": 5
+    },
+    {
+      "lsoa_code": "E01031983",
+      "lsoa_name": "Wiltshire 052D",
+      "imd_rank": 5356,
+      "imd_decile": 2
+    },
+    {
+      "lsoa_code": "E01031984",
+      "lsoa_name": "Wiltshire 051A",
+      "imd_rank": 27750,
+      "imd_decile": 9
+    },
+    {
+      "lsoa_code": "E01031985",
+      "lsoa_name": "Wiltshire 051B",
+      "imd_rank": 14753,
+      "imd_decile": 5
+    },
+    {
+      "lsoa_code": "E01031986",
+      "lsoa_name": "Wiltshire 051C",
+      "imd_rank": 12074,
+      "imd_decile": 4
+    },
+    {
+      "lsoa_code": "E01032001",
+      "lsoa_name": "Wiltshire 055A",
+      "imd_rank": 25246,
+      "imd_decile": 8
+    },
+    {
+      "lsoa_code": "E01032002",
+      "lsoa_name": "Wiltshire 055B",
+      "imd_rank": 21930,
+      "imd_decile": 7
+    },
+    {
+      "lsoa_code": "E01032003",
+      "lsoa_name": "Wiltshire 055C",
+      "imd_rank": 21390,
+      "imd_decile": 7
+    },
+    {
+      "lsoa_code": "E01032005",
+      "lsoa_name": "Wiltshire 059A",
+      "imd_rank": 29429,
+      "imd_decile": 9
+    },
+    {
+      "lsoa_code": "E01032006",
+      "lsoa_name": "Wiltshire 059B",
+      "imd_rank": 33466,
+      "imd_decile": 10
+    },
+    {
+      "lsoa_code": "E01032008",
+      "lsoa_name": "Wiltshire 058A",
+      "imd_rank": 13372,
+      "imd_decile": 4
+    },
+    {
+      "lsoa_code": "E01032009",
+      "lsoa_name": "Wiltshire 058B",
+      "imd_rank": 32548,
+      "imd_decile": 10
+    },
+    {
+      "lsoa_code": "E01032012",
+      "lsoa_name": "Wiltshire 057C",
+      "imd_rank": 33388,
+      "imd_decile": 10
+    },
+    {
+      "lsoa_code": "E01032014",
+      "lsoa_name": "Wiltshire 056A",
+      "imd_rank": 9857,
+      "imd_decile": 3
+    },
+    {
+      "lsoa_code": "E01032015",
+      "lsoa_name": "Wiltshire 056B",
+      "imd_rank": 16064,
+      "imd_decile": 5
+    },
+    {
+      "lsoa_code": "E01032016",
+      "lsoa_name": "Wiltshire 056C",
+      "imd_rank": 25241,
+      "imd_decile": 8
+    },
+    {
+      "lsoa_code": "E01032017",
+      "lsoa_name": "Wiltshire 051D",
+      "imd_rank": 33519,
+      "imd_decile": 10
+    },
+    {
+      "lsoa_code": "E01032018",
+      "lsoa_name": "Wiltshire 053A",
+      "imd_rank": 32968,
+      "imd_decile": 10
+    },
+    {
+      "lsoa_code": "E01032019",
+      "lsoa_name": "Wiltshire 053B",
+      "imd_rank": 14070,
+      "imd_decile": 5
+    },
+    {
+      "lsoa_code": "E01032020",
+      "lsoa_name": "Wiltshire 053C",
+      "imd_rank": 28125,
+      "imd_decile": 9
+    },
+    {
+      "lsoa_code": "E01032021",
+      "lsoa_name": "Wiltshire 056D",
+      "imd_rank": 26334,
+      "imd_decile": 8
+    },
+    {
+      "lsoa_code": "E01032022",
+      "lsoa_name": "Wiltshire 058C",
+      "imd_rank": 16528,
+      "imd_decile": 5
+    },
+    {
+      "lsoa_code": "E01032023",
+      "lsoa_name": "Wiltshire 059D",
+      "imd_rank": 4510,
+      "imd_decile": 2
+    },
+    {
+      "lsoa_code": "E01032024",
+      "lsoa_name": "Wiltshire 055D",
+      "imd_rank": 21966,
+      "imd_decile": 7
+    },
+    {
+      "lsoa_code": "E01032025",
+      "lsoa_name": "Wiltshire 053D",
+      "imd_rank": 24305,
+      "imd_decile": 8
+    },
+    {
+      "lsoa_code": "E01034550",
+      "lsoa_name": "Wiltshire 057G",
+      "imd_rank": 20843,
+      "imd_decile": 7
+    }
+  ]
+}

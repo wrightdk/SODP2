@@ -1,0 +1,52 @@
+---
+layout: base.njk
+title: Companies & Business
+isCompanies: true
+---
+<div class="section" style="padding-bottom:56px;">
+  <h1>Companies &amp; Business</h1>
+  <p class="section__intro">
+    Companies registered with Companies House whose registered office postcode falls
+    within the locality's postcode prefixes.
+  </p>
+
+  {% for locality in companiesLocalities %}
+  {% set data = locality.companies %}
+  <section style="margin-top:32px;">
+    <h2 style="font-size:22px;">{{ locality.slug }} — {{ data.month }}</h2>
+    <p style="color:var(--text-muted);margin-top:8px;">
+      {{ data.company_count }} companies ({{ data.active_count }} active) with a registered
+      office in {{ data.filter.postcode_prefixes | join(", ") }}.
+      Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
+      fetched {{ data.fetched_at }}.
+      <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
+    </p>
+    <div style="overflow-x:auto;margin-top:16px;">
+      <table style="width:100%;font-size:13.5px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Company</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Number</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Status</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Incorporated</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Postcode</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for company in data.companies %}
+          <tr>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ company.company_name }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ company.company_number }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ company.company_status }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ company.date_of_creation }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ company.postal_code }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% else %}
+  <p style="margin-top:24px;">No processed data found yet — run <code>ingest/companies_house.py</code> first (needs <code>COMPANIES_HOUSE_API_KEY</code> set).</p>
+  {% endfor %}
+</div>
