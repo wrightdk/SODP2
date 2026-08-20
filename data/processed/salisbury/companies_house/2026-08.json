@@ -15,8 +15,6 @@
       "SP2"
     ]
   },
-  "company_count": 10673,
-  "active_count": 5247,
   "companies": [
     {
       "company_name": "FITALL LTD",
@@ -96075,5 +96073,7 @@
       "date_of_cessation": null,
       "postal_code": "SP2 7NW"
     }
-  ]
+  ],
+  "company_count": 10673,
+  "active_count": 5247
 }

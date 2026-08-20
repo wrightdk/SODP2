@@ -35,6 +35,9 @@ Caching: same approach as before — no separate cheap "what's latest"
 endpoint, so the (still small, ~28-row) data query doubles as the check.
 The result's resolved year is the cache key.
 
+This script writes the per-LSOA estimates only — no total. Run
+pipeline/ons_population_stats.py after this to sum them; see CLAUDE.md rule 1.
+
 Usage:
     python ingest/ons_population.py --config config/salisbury.yml
 """
@@ -145,8 +148,6 @@ def write_processed(slug, year, obs, source_url, fetched_at, lsoa_codes, geograp
         }
         for o in obs
     ]
-    total = sum(l["population"] for l in by_lsoa)
-
     if len(by_lsoa) < len(lsoa_codes):
         missing = set(lsoa_codes) - {l["code"] for l in by_lsoa}
         print(f"WARNING: {len(missing)} of {len(lsoa_codes)} lsoa_codes had no observation returned: {sorted(missing)}")
@@ -163,14 +164,13 @@ def write_processed(slug, year, obs, source_url, fetched_at, lsoa_codes, geograp
                 "locality": slug,
                 "year": int(year),
                 "filter": {"method": geography_key, geography_key: lsoa_codes},
-                "population": total,
                 "by_lsoa": sorted(by_lsoa, key=lambda l: l["code"]),
             },
             indent=2,
         ),
         encoding="utf-8",
     )
-    print(f"Wrote population estimate {total:,} for {slug} ({year}) to {processed_path}")
+    print(f"Wrote {len(by_lsoa)} LSOA population estimates for {slug} ({year}) to {processed_path}")
 
 
 if __name__ == "__main__":

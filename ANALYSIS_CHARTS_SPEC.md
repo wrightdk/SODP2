@@ -110,9 +110,10 @@ is inherently about variation between neighbourhoods, not one figure.
 
 ## Build order recommendation
 
-1. Shared choropleth base map (unlocks four sources at once)
-2. IMD choropleth + distribution bar (data already exists, no new
-   ingestion needed — fastest win)
+1. ✅ Shared choropleth base map (unlocks four sources at once) — done,
+   `pipeline/choropleth.py`
+2. ✅ IMD choropleth + distribution bar (data already exists, no new
+   ingestion needed — fastest win) — done, `pipeline/imd_charts.py`
 3. Crime pie chart + choropleth (crime data already live)
 4. Population pyramid + density choropleth
 5. Companies House charts (check SIC code capture first)

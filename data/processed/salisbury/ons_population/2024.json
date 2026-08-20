@@ -37,7 +37,6 @@
       "E01034550"
     ]
   },
-  "population": 47234,
   "by_lsoa": [
     {
       "code": "E01031980",
@@ -179,5 +178,6 @@
       "name": "Wiltshire 057G",
       "population": 1168
     }
-  ]
+  ],
+  "population": 47234
 }

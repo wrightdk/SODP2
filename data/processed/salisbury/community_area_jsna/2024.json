@@ -1,0 +1,88 @@
+{
+  "source_url": "https://www.wiltshireintelligence.org.uk/cajsna/salisbury/",
+  "pdf_url": "https://www.wiltshireintelligence.org.uk/wp-content/uploads/2024/01/Salisbury.pdf",
+  "fetched_at": "2026-08-20T08:57:26Z",
+  "pdf_fetched_at": "2026-08-20T08:57:25Z",
+  "locality": "salisbury",
+  "report_edition": "CAJSNA 2024",
+  "geography": {
+    "label": "Salisbury Community Area",
+    "caveat": "Salisbury Community Area is Wiltshire Council's Area Board/CAJSNA geography (the town plus surrounding villages and parishes) \u2014 a WIDER boundary than the Built-Up Area (BUA) used by every other source on this site. Do not compare or combine these figures with this locality's population, crime, companies, or IMD figures as if they describe the same population."
+  },
+  "indicators_matched": 8,
+  "indicators_skipped": [],
+  "indicators": [
+    {
+      "key": "self_reported_bad_health",
+      "theme": "Mental health",
+      "label": "Population self-reporting bad or very bad health",
+      "unit": "%",
+      "value": 4.7,
+      "wiltshire_value": 4.2,
+      "period": "2021"
+    },
+    {
+      "key": "gp_diagnosed_depression",
+      "theme": "Mental health",
+      "label": "Residents registered with a GP with a diagnosis of depression",
+      "unit": "%",
+      "value": 12.1,
+      "wiltshire_value": 11.8,
+      "period": "2022/23"
+    },
+    {
+      "key": "single_person_households",
+      "theme": "Mental health",
+      "label": "Households that are single-person households",
+      "unit": "%",
+      "value": 34.0,
+      "wiltshire_value": 28.2,
+      "period": "2021"
+    },
+    {
+      "key": "fuel_poverty",
+      "theme": "Cost of living",
+      "label": "Homes in fuel poverty",
+      "unit": "%",
+      "value": 10.8,
+      "wiltshire_value": 10.4,
+      "period": "2021"
+    },
+    {
+      "key": "pension_credit_uptake",
+      "theme": "Cost of living",
+      "label": "Pensioners in receipt of Pension Credit",
+      "unit": "%",
+      "value": 9.2,
+      "wiltshire_value": 7.5,
+      "period": "2023"
+    },
+    {
+      "key": "children_low_income_families",
+      "theme": "Cost of living",
+      "label": "Children under 16 living in a low-income family",
+      "unit": "%",
+      "value": 13.6,
+      "wiltshire_value": 12.7,
+      "period": "2021/22"
+    },
+    {
+      "key": "self_reported_good_health_65plus",
+      "theme": "Ageing population",
+      "label": "Residents aged 65 and over self-reporting good health",
+      "unit": "%",
+      "value": 63.0,
+      "wiltshire_value": 64.0,
+      "period": "2021"
+    },
+    {
+      "key": "dementia_prevalence",
+      "theme": "Ageing population",
+      "label": "Dementia prevalence",
+      "unit": "%",
+      "value": 1.0,
+      "wiltshire_value": 0.9,
+      "period": "2022/23"
+    }
+  ]
+}
