@@ -15,16 +15,23 @@ data/reference/*.csv, *.xlsx                cached ONS geography lookups
 data/reference/lsoa_boundaries_salisbury.geojson  cached LSOA boundaries, for choropleths
 data/raw/imd_deprivation/*.xlsx             cached raw IMD file (source for imd_deprivation)
 data/raw/{police_crime,ons_population,companies_house}/salisbury/*.json  cached raw API pulls
+data/raw/{parliamentary_elections,local_elections}/salisbury/*.json  cached raw Democracy Club pulls
 data/processed/salisbury/{police_crime,ons_population,imd_deprivation}/*.json  live sources
+data/processed/salisbury/{parliamentary_elections,local_elections}/*.json  live sources
 data/processed/salisbury/imd_deprivation/charts/*.svg  pipeline-generated IMD charts
-ingest/{police_crime,ons_population,companies_house,imd_deprivation}.py  four ingestion scripts —
-                                            fetch + filter only, no computation (rule 1)
+data/processed/salisbury/{parliamentary_elections,local_elections}/charts/*.svg  pipeline-generated
+                                            election charts (vote-share line charts + hemicycle)
+ingest/{police_crime,ons_population,companies_house,imd_deprivation}.py  fetch + filter
+                                            only, no computation (rule 1)
+ingest/{parliamentary_elections,local_elections}.py  same rule, both read Democracy Club
 pipeline/common.py                         shared read-latest / merge-fields-back-in helpers
 pipeline/{police_crime,ons_population,companies_house}_stats.py  compute this source's
                                             derived field(s), merged into ingest/'s output file
 pipeline/choropleth.py                     shared, source-agnostic LSOA choropleth renderer
 pipeline/imd_charts.py                     IMD-specific: choropleth.py + distribution bar +
                                             average_decile (IMD's stats script, effectively)
+pipeline/elections_charts.py               vote-share line chart + hemicycle renderers, shared
+                                            across parliamentary_elections and local_elections
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
 .github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
 site/                                        Eleventy site — homepage + Data hub (/data/) +
@@ -260,6 +267,106 @@ The ONS reference CSVs/XLSX have already been moved into `/data/reference/`
 and the IMD file into `/data/raw/imd_deprivation/` — don't re-download or
 duplicate them at the repo root.
 
+**Elections (`local_elections` + `parliamentary_elections`) are now live** —
+both read Democracy Club's candidates/results database
+(`candidates.democracyclub.org.uk/data/export_csv/`), not the House of
+Commons Library's 1918-2019 archive (CBP-8647) the source was originally
+briefed against. Findings from building this, so a future session doesn't
+re-derive them:
+
+- **commonslibrary.parliament.uk and researchbriefings.files.parliament.uk
+  (the direct CSV host) both serve a Cloudflare "Just a moment..." JS
+  challenge to non-browser HTTP clients** — confirmed live with curl
+  (`cf-mitigated: challenge` in the response headers, browser-shaped
+  User-Agent made no difference). Same class of blocker as
+  council_transparency's wiltshire.gov.uk wall, not fixable with
+  request headers alone. Democracy Club (CloudFront-fronted, not
+  Cloudflare) isn't blocked and turned out to cover general elections
+  since 2010 too, so `ingest/parliamentary_elections.py` uses it instead
+  — plenty for a "last 3 general elections" chart, but if 1918-2019 depth
+  is ever actually wanted, that's still blocked and would need the same
+  kind of decision council_transparency is waiting on (headless-browser
+  dependency vs. manual download vs. something else — ask first).
+- Democracy Club's CSV export has no per-constituency or per-council
+  query parameter — only a regex against its own `election_id`/
+  `ballot_paper_id` scheme. `parliamentary_elections.py` fetches every
+  general election candidate nationwide (~20k rows) and filters to
+  `geography.parliamentary_constituencies` client-side.
+  `local_elections.py` narrows the fetch itself via a new
+  `sources.local_elections.council_slug` config field (Democracy Club's
+  own council identifier, e.g. `"wiltshire"` — not derivable from
+  `council_name` by any reliable slugification rule, so it's stored
+  directly, verified live) and double-checks the result's
+  `organisation_name` actually matches `council_name` before writing
+  anything, in case the slug ever resolves to the wrong council.
+- **`config/salisbury.yml`'s `geography.wards` was a fabricated
+  placeholder** (already flagged as unverified in an earlier session) —
+  it matched *no* real Wiltshire division, old or current boundary.
+  Regenerated from Democracy Club's own election data (verified live
+  against both the 2021-05-06 and 2025-05-01 elections, which use
+  identical division names/codes — a stable current boundary, not a
+  one-election snapshot) into the real 8 Salisbury-area divisions. But —
+  **`local_elections.py` does NOT filter by `geography.wards`.** Wiltshire's
+  division boundaries changed between the 2017 and 2021 elections
+  (confirmed live: "Salisbury Harnham" split into "Salisbury Harnham
+  East"/"Harnham West" between those two elections, with different GSS
+  codes), so a single current `wards` list can't correctly select "this
+  locality's divisions" across every election year a multi-year chart
+  needs. `ingest/local_elections.py` fetches the *whole council's* data
+  instead (needed anyway for the hemicycle — see below), and
+  `pipeline/elections_charts.py` selects the locality's own divisions
+  per election year by prefix-matching each division's name against
+  `geography.bua_name` ("Salisbury ") — verified this correctly finds
+  the same 8 divisions in both the 2017 and 2021+ boundary eras. This is
+  a "portable in pattern, not in every specific" mechanism (see that
+  section below) — a council whose division names don't carry the town
+  name as a prefix would need a different selection rule. `wards` is
+  kept as the human-readable current list for display purposes, not as
+  a filter.
+- **The hemicycle chart (current council-wide composition) is
+  deliberately NOT "just render the last full election's results"** —
+  `pipeline/elections_charts.py`'s `current_composition()` anchors on
+  the most recent *ordinary* (non-by-election) election to define the
+  current set of seats (excluding boundary-review-superseded divisions
+  still present in the history), then takes the most recent result *per
+  individual seat* — its anchor result, or a later by-election result if
+  one exists — rather than assuming the anchor election is still
+  current for every seat. Checked live: Wiltshire has had zero local
+  by-elections since the 2025-05-01 full election, so today the two
+  approaches happen to produce the same 98-seat composition (37
+  Conservative, 43 Liberal Democrats, 7 Independent, 10 Reform UK, 1
+  Labour) — that equivalence is real but coincidental to today's date,
+  not something the code assumes.
+- No new charting dependency was needed for the line charts or the
+  hemicycle — both are hand-rolled SVG (stdlib `math`/`colorsys` for the
+  hemicycle's row layout and fallback party colours), same approach as
+  `choropleth.py`. UK party colours/left-right seating order in
+  `pipeline/elections_charts.py`'s `PARTY_STYLES`/`PARTY_LEFT_RIGHT_ORDER`
+  follow common public convention, not any officially licensed palette.
+- Both sources are now wired into the site (a follow-up session, same
+  day): `slug` fields (`local-elections`, `general-elections`) in
+  config, `TITLES`/`CARD_META`/`FIGURE_FORMATTERS` entries in
+  `dataHub.js`/`homeCards.js`, detail pages at
+  `site/src/data/local-elections.njk` and
+  `site/src/data/general-elections.njk`, and both added to
+  `base.njk`'s nav dropdown and footer. The local-elections homepage
+  card reuses the choropleth_mini pattern — a legend-less
+  `hemicycle_mini.svg` (`render_hemicycle(..., show_legend=False)`,
+  same convention as `choropleth.py`'s `show_legend`) — rather than a
+  text figure, since "who controls the council" reads faster as a
+  picture than a number. `current_composition()` in
+  `elections_charts.py` was refactored to return per-seat dicts
+  (`post_label`, `gss`, `party_name`, `election_date`) rather than just
+  a flat list of party names, so the same one computation can both
+  count seats for the hemicycle *and* slice out this locality's own
+  divisions (merged into the processed file as
+  `locality_current_divisions`) for the detail page's table — not two
+  separate passes over `results` that could drift apart. Party display
+  names are also merged into the processed files now
+  (`elected_party_short`, `current_composition_largest_party_short`,
+  each division's `party_short`) so neither `homeCards.js` nor any
+  template needs its own copy of `PARTY_STYLES`' short-label mapping.
+
 **Known gap between the documented join plan and the actual script:**
 `generate_locality_geography.py` (v2) currently only implements steps 1–3
 of the 7-step chain below — BUA→LSOA/LAD, LSOA→PCON, LAD→PFA. It does not
@@ -398,11 +505,22 @@ uv run ingest/imd_deprivation.py --config config/salisbury.yml
 # Ingestion: Wiltshire CAJSNA Summary Data Pack PDF — downloads + parses, no pipeline step (nothing derived)
 uv run ingest/community_area_jsna.py --config config/salisbury.yml
 
+# Ingestion: general election results for the constituency, from Democracy Club
+uv run ingest/parliamentary_elections.py --config config/salisbury.yml
+
+# Ingestion: local council election results for the whole council, from Democracy Club
+# (whole council, not just this locality's divisions — see CLAUDE.md above for why)
+uv run ingest/local_elections.py --config config/salisbury.yml
+
 # Onboarding: cache LSOA boundary geometry for choropleths (one-off, like generate_locality_geography.py)
 uv run fetch_lsoa_boundaries.py --config config/salisbury.yml
 
 # Pipeline: IMD choropleth + distribution bar charts + average_decile — run after ingest/imd_deprivation.py
 uv run pipeline/imd_charts.py --config config/salisbury.yml
+
+# Pipeline: general/local election vote-share line charts + council hemicycle + elected_party/
+# current_composition — run after both ingest/parliamentary_elections.py and ingest/local_elections.py
+uv run pipeline/elections_charts.py --config config/salisbury.yml
 
 # Site: build the Eleventy site (homepage + one page per live source) from data/processed/
 cd site && npm install   # first time only, or after package.json changes
@@ -556,8 +674,8 @@ they aren't ONS products.
 
 ## Sources that are portable in pattern, not in specifics
 
-Two known categories exist everywhere in principle but differ in every
-actual detail per locality — never assume either transfers as-is to a
+Three known categories exist everywhere in principle but differ in every
+actual detail per locality — never assume any of them transfers as-is to a
 second locality's config, even though every locality has one:
 
 - **Council transparency data** (spend, planning registers) — every
@@ -573,11 +691,23 @@ second locality's config, even though every locality has one:
   equivalent that looks nothing like it structurally. Not built yet —
   flagging so a future session doesn't assume Wiltshire's shape
   generalizes.
+- **`local_elections`'s locality-division selection.** The source itself
+  (Democracy Club's candidates/results database) is genuinely portable —
+  same CSV shape, same fields, for every English/Welsh council. What
+  isn't portable is `pipeline/elections_charts.py`'s method for picking
+  "this locality's divisions" out of a council's full results: it
+  prefix-matches division names against `geography.bua_name`, which only
+  works because Wiltshire happens to name its Salisbury-area divisions
+  "Salisbury <sub-area>". A council that names divisions unrelated to
+  the town name (a fairly common pattern too) would need a different
+  selection rule — most likely a real LSOA/LAD-to-Ward best-fit lookup
+  (join-plan step 4, still not implemented) rather than a name guess.
 
-If you're onboarding a second locality and either category is already
-wired up for the first, budget time to re-verify the URL, file format,
-and column names from scratch — don't assume the first locality's
-config values are anything more than a starting guess for the second.
+If you're onboarding a second locality and any of these is already
+wired up for the first, budget time to re-verify the URL/file
+format/column names/selection rule from scratch — don't assume the
+first locality's config values or code are anything more than a
+starting guess for the second.
 
 ## Target repo structure
 

@@ -44,7 +44,11 @@ const CARD_META = {
   },
   local_elections: {
     title: "Local Elections",
-    desc: () => "Ward-level results, once the local elections ingestion script is built.",
+    desc: (c) => `${c.sources.local_elections.council_name}'s current party composition, from Democracy Club.`,
+  },
+  parliamentary_elections: {
+    title: "General Elections",
+    desc: (c) => `General election results for ${c.locality.name}'s constituency, from Democracy Club.`,
   },
   // NOTE: this source's geography is the Community Area (Area Board
   // boundary — wider than the BUA every other card uses), never just
@@ -127,6 +131,32 @@ const FIGURE_FORMATTERS = {
       hasSpark: false,
       fetchedAt: latest.fetched_at,
       updateLabel: `${latest.report_edition} data pack`,
+    };
+  },
+  // Compact hemicycle from pipeline/elections_charts.py, same
+  // has-a-mini-chart-or-fall-back-to-text pattern as imd_deprivation
+  // above. Links to /data/local-elections/ for the full chart (with
+  // legend) and this locality's own current divisions.
+  local_elections: (latest, slug) => {
+    if (latest.current_composition_largest_party === undefined) return null; // pipeline/elections_charts.py hasn't run
+    const chartSvg = readChartSvg(DATA_ROOT, slug, "local_elections", "hemicycle_mini");
+    return {
+      figure: chartSvg ? null : latest.current_composition_largest_party_short,
+      chartSvg,
+      unit: `${latest.current_composition_largest_party_short} largest party, ${latest.current_composition[latest.current_composition_largest_party]}/${latest.current_composition_total_seats} seats`,
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `council composition as of ${latest.current_composition_as_of}`,
+    };
+  },
+  parliamentary_elections: (latest) => {
+    if (latest.elected_party === undefined) return null; // pipeline/elections_charts.py hasn't run
+    return {
+      figure: latest.elected_party_short,
+      unit: `held since ${latest.latest_election_date}, ${latest.elected_party_vote_share_pct}% of the vote`,
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `${latest.latest_election_date} general election result`,
     };
   },
 };

@@ -31,7 +31,7 @@
 
       <nav class="primary-nav" aria-label="Primary">
         <a href="{{ '/' | url }}" aria-current="{{ 'page' if isHome else 'false' }}">Home</a>
-        <div class="nav-dropdown{{ ' nav-dropdown--active' if (isData or isCrime or isPopulation or isCompanies or isDeprivation or isJsna) }}">
+        <div class="nav-dropdown{{ ' nav-dropdown--active' if (isData or isCrime or isPopulation or isCompanies or isDeprivation or isJsna or isLocalElections or isGeneralElections) }}">
           <a href="{{ '/data/' | url }}" class="nav-dropdown__trigger" aria-current="{{ 'page' if isData else 'false' }}" aria-haspopup="true">
             Data
             <svg class="nav-dropdown__chevron" width="9" height="6" viewBox="0 0 9 6" aria-hidden="true"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -41,6 +41,8 @@
             <a href="{{ ('/data/' ~ config.sources.ons_population.slug ~ '/') | url }}" aria-current="{{ 'page' if isPopulation else 'false' }}">Population</a>
             <a href="{{ ('/data/' ~ config.sources.companies_house.slug ~ '/') | url }}" aria-current="{{ 'page' if isCompanies else 'false' }}">Companies</a>
             <a href="{{ ('/data/' ~ config.sources.imd_deprivation.slug ~ '/') | url }}" aria-current="{{ 'page' if isDeprivation else 'false' }}">Deprivation</a>
+            <a href="{{ ('/data/' ~ config.sources.local_elections.slug ~ '/') | url }}" aria-current="{{ 'page' if isLocalElections else 'false' }}">Local Elections</a>
+            <a href="{{ ('/data/' ~ config.sources.parliamentary_elections.slug ~ '/') | url }}" aria-current="{{ 'page' if isGeneralElections else 'false' }}">General Elections</a>
             <a href="{{ ('/data/' ~ config.sources.community_area_jsna.slug ~ '/') | url }}" aria-current="{{ 'page' if isJsna else 'false' }}">Community Area JSNA</a>
           </div>
         </div>
@@ -71,6 +73,8 @@
         <a href="{{ ('/data/' ~ config.sources.ons_population.slug ~ '/') | url }}">Population</a>
         <a href="{{ ('/data/' ~ config.sources.companies_house.slug ~ '/') | url }}">Companies</a>
         <a href="{{ ('/data/' ~ config.sources.imd_deprivation.slug ~ '/') | url }}">Deprivation</a>
+        <a href="{{ ('/data/' ~ config.sources.local_elections.slug ~ '/') | url }}">Local Elections</a>
+        <a href="{{ ('/data/' ~ config.sources.parliamentary_elections.slug ~ '/') | url }}">General Elections</a>
         <a href="{{ ('/data/' ~ config.sources.community_area_jsna.slug ~ '/') | url }}">Community Area JSNA</a>
       </nav>
       <div class="site-footer__meta">

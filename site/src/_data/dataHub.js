@@ -23,6 +23,7 @@ const TITLES = {
   planning_register: "Planning Register",
   imd_deprivation: "Deprivation (IMD)",
   local_elections: "Local Elections",
+  parliamentary_elections: "General Elections",
   community_area_jsna: "Community Area JSNA",
 };
 
