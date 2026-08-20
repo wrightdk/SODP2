@@ -1,0 +1,118 @@
+---
+layout: base.njk
+title: Methodology
+isMethodology: true
+---
+<div class="section" style="padding-bottom:56px;max-width:800px;">
+  <h1>Methodology</h1>
+  <p class="section__intro" style="max-width:none;">
+    Numbers on this site are computed deterministically from public data in Python and R. An AI
+    assistant only turns already-computed figures into prose — it never calculates, estimates, or
+    rounds a statistic itself.
+  </p>
+
+  <section style="margin-top:36px;">
+    <h2 style="font-size:20px;">Why a town boundary, not a council boundary</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      {{ config.sources.council_transparency.council_name if config.sources.council_transparency else "The local council" }}
+      is a large authority covering {{ config.locality.name }} and a lot of countryside and other
+      towns in between. Filtering national data to the council alone would produce
+      "{{ config.locality.region }}" content, not "{{ config.locality.name }}" content. Instead we
+      use the Office for National Statistics' own settlement boundary — a Built-Up Area — which
+      draws the actual edge of the town.
+    </p>
+
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:0;max-width:420px;">
+      <div style="border:1px solid var(--border);border-radius:13px;padding:20px;background:var(--bg-elevated);">
+        <span style="font-size:11px;letter-spacing:.04em;color:var(--text-muted);">REGION</span>
+        <p style="margin-top:4px;font-weight:600;">{{ config.locality.region }} &amp; {{ config.locality.country }}</p>
+        <div style="margin-top:14px;border:1px solid var(--border);border-radius:10px;padding:16px;background:var(--bg-sunken);">
+          <span style="font-size:11px;letter-spacing:.04em;color:var(--text-muted);">LOCAL AUTHORITY</span>
+          <p style="margin-top:4px;font-weight:600;">
+            {{ config.sources.council_transparency.council_name if config.sources.council_transparency else config.locality.region }}
+          </p>
+          <div style="margin-top:12px;border:1px solid var(--accent);border-radius:8px;padding:12px;background:var(--accent-soft);">
+            <span style="font-size:11px;letter-spacing:.04em;color:var(--accent-dark);">BUILT-UP AREA</span>
+            <p style="margin-top:4px;font-weight:600;color:var(--accent-dark);">{{ config.locality.name }}</p>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:10px;font-size:12.5px;color:var(--text-muted);">
+        What this site actually reports on: the innermost boundary.
+      </p>
+    </div>
+  </section>
+
+  <section style="margin-top:36px;">
+    <h2 style="font-size:20px;">Data sources</h2>
+    <div style="overflow-x:auto;margin-top:14px;">
+      <table style="width:100%;font-size:13.5px;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Source</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Coverage</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Filtered by</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in methodologySources %}
+          <tr>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);font-weight:500;">{{ row.title }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ row.coverage }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ row.filteredBy }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">
+              {% if row.isLive %}Live{% else %}<span style="color:var(--text-muted);">Coming soon</span>{% endif %}
+            </td>
+          </tr>
+          {% if row.isCommunityAreaJsna %}
+          <tr>
+            <td colspan="4" style="padding:2px 10px 14px;border-bottom:1px solid var(--border);">
+              <p style="font-size:12.5px;color:var(--text-muted);background:var(--bg-sunken);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+                <strong style="color:var(--text);">Boundary caveat:</strong> this source covers the
+                {{ config.sources.community_area_jsna.area_display_name }} — Wiltshire's wider
+                Community Area/Area Board geography (the town plus surrounding villages and
+                parishes), not the Built-Up Area every other source on this page uses. Figures from
+                this source should never be presented alongside BUA-based figures as if they
+                describe the same population.
+              </p>
+            </td>
+          </tr>
+          {% endif %}
+          {% else %}
+          <tr><td colspan="4" style="padding:14px 10px;">No sources configured yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:10px;font-size:12px;color:var(--text-muted);">
+      Generated from <code>config/{{ config.locality.slug }}.yml</code>'s sources block at build
+      time — see the <a href="{{ '/data/' | url }}">Data hub</a> for fetch timestamps and download
+      links per source.
+    </p>
+  </section>
+
+  <section style="margin-top:32px;">
+    <h2 style="font-size:20px;">Every figure is traceable</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      Any number that reaches an article or a chart on this site carries its source URL and the
+      timestamp it was fetched at. Nothing is published without that provenance attached.
+    </p>
+  </section>
+
+  <section style="margin-top:32px;">
+    <h2 style="font-size:20px;">Human review, always</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      Scheduled jobs open a pull request when a new article is drafted; nothing goes live
+      automatically. A person reads and approves every article before it publishes.
+    </p>
+  </section>
+
+  <section style="margin-top:32px;">
+    <h2 style="font-size:20px;">Licensing</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      All data used here is published under the Open Government Licence or an equivalent open
+      licence, and this site's own output is offered under the same terms.
+    </p>
+  </section>
+</div>

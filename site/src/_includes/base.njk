@@ -46,6 +46,8 @@
             <a href="{{ ('/data/' ~ config.sources.community_area_jsna.slug ~ '/') | url }}" aria-current="{{ 'page' if isJsna else 'false' }}">Community Area JSNA</a>
           </div>
         </div>
+        <a href="{{ '/about/' | url }}" aria-current="{{ 'page' if isAbout else 'false' }}">About</a>
+        <a href="{{ '/methodology/' | url }}" aria-current="{{ 'page' if isMethodology else 'false' }}">Methodology</a>
       </nav>
 
       <div class="header-controls">
@@ -76,6 +78,8 @@
         <a href="{{ ('/data/' ~ config.sources.local_elections.slug ~ '/') | url }}">Local Elections</a>
         <a href="{{ ('/data/' ~ config.sources.parliamentary_elections.slug ~ '/') | url }}">General Elections</a>
         <a href="{{ ('/data/' ~ config.sources.community_area_jsna.slug ~ '/') | url }}">Community Area JSNA</a>
+        <a href="{{ '/about/' | url }}">About</a>
+        <a href="{{ '/methodology/' | url }}">Methodology</a>
       </nav>
       <div class="site-footer__meta">
         <p>Published under the Open Government Licence.<br>

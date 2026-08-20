@@ -1,0 +1,45 @@
+---
+layout: base.njk
+title: About
+isAbout: true
+---
+<div class="section" style="padding-bottom:56px;max-width:720px;">
+  <h1>About {{ config.narrative.project_name }}</h1>
+  <p class="section__intro" style="max-width:none;">
+    A small pipeline that pulls public UK datasets, filters them down to one town, and turns
+    the results into short, human-approved articles — automated local data journalism, running
+    entirely on free infrastructure.
+  </p>
+
+  <section style="margin-top:36px;">
+    <h2 style="font-size:20px;">Why it started here</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      This project is a rebuild of a 2020 Salisbury open data effort — restarted so the same
+      pipeline can run for any English or Welsh town by writing a new configuration file, rather
+      than forking any code. Salisbury is simply the first place it runs.
+    </p>
+  </section>
+
+  <section style="margin-top:32px;">
+    <h2 style="font-size:20px;">How it runs</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      Scheduled jobs fetch data, deterministic code in Python and R computes the numbers, and a
+      static site is published to GitHub Pages — no server to maintain. An AI assistant is used
+      sparingly, only to phrase a short article when a figure moves enough to be worth writing
+      about, and only after a human signs off.
+    </p>
+  </section>
+
+  <section style="margin-top:32px;">
+    <h2 style="font-size:20px;">Built to be reused</h2>
+    <p style="margin-top:10px;color:var(--text-muted);">
+      Every locality-specific detail lives in a single configuration file. It's designed so that
+      bringing this to another town means writing that file, not touching the pipeline itself —
+      though that hasn't been proven with an actual second-locality test yet.
+    </p>
+  </section>
+
+  <p style="margin-top:36px;">
+    <a href="https://github.com/wrightdk/SODP2" target="_blank" rel="noopener">View the source on GitHub &rarr;</a>
+  </p>
+</div>
