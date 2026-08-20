@@ -27,7 +27,8 @@ pipeline/imd_charts.py                     IMD-specific: choropleth.py + distrib
                                             average_decile (IMD's stats script, effectively)
 .github/workflows/ingest.yml                weekly cron, smoke-test only (see below)
 .github/workflows/deploy.yml                builds site/, deploys to Pages via native Pages actions
-site/                                        Eleventy site — homepage + one page per live source
+site/                                        Eleventy site — homepage + Data hub (/data/) +
+                                            one page per live source, nested at /data/<slug>/
 requirements.txt, .venv/                    see "Environment setup"
 narrative/                                  empty (.gitkeep only) — not started
 ```
@@ -47,22 +48,57 @@ check before referencing a path there.
 `site/src/index.njk` is the real homepage, built from an exported Claude
 Design mockup (see DESIGN_HANDOFF_NOTES.md — the four required changes
 listed there are implemented). Each live source also has its own detail
-page — `crime.njk` (`/crime/`, still the bare Phase 2 table), plus
-`population.njk` (`/population/`), `companies.njk` (`/companies/`), and
-`deprivation.njk` (`/deprivation/`) added in the same session as their
-ingestion scripts. None of these are final page designs (no "Crime &
-Safety"-style layout was ever built) — they're all the same plain
-pattern: source link, fetched timestamp, a table, and a "download the
-raw JSON" link. `eleventy.config.js` copies `data/processed/` to
-`_site/data/` so those download links resolve to something real. This
-site deploys to a GitHub Pages *project* subpath (`/SODP2/`, not the
-domain root) — `eleventy.config.js` sets `pathPrefix` from a
+page, now living under `site/src/data/` and nested at `/data/<slug>/`
+(not `/<source>/` — moved in the same session the Data hub was added):
+`data/crime.njk` (`/data/crime/`, still the bare Phase 2 table), plus
+`data/population.njk` (`/data/population/`), `data/companies.njk`
+(`/data/companies/`), and `data/deprivation.njk` (`/data/deprivation/`)
+added in the same session as their ingestion scripts, and
+`data/jsna.njk` (`/data/jsna/`). None of these are final page designs
+(no "Crime & Safety"-style layout was ever built) — they're all the
+same plain pattern: source link, fetched timestamp, a table, and a
+"download the raw JSON" link. Each page's `permalink` front matter
+reads its URL segment from config (e.g.
+`"/data/{{ config.sources.police_crime.slug }}/index.html"`) rather
+than hardcoding it, so renaming a source's `slug` in config moves the
+page without touching the template. `eleventy.config.js` copies
+`data/processed/` to `_site/data/` so those download links resolve to
+something real — this sits alongside the page routes under the same
+`/data/` URL space without colliding, since page slugs (`crime`,
+`population`, …) and the locality slug (`salisbury`) are different
+strings; don't pick a source `slug` that collides with a locality slug.
+This site deploys to a GitHub Pages *project* subpath (`/SODP2/`, not
+the domain root) — `eleventy.config.js` sets `pathPrefix` from a
 `PATH_PREFIX` env var (only `deploy.yml`'s CI build sets it; local
 build/serve default to `/`), and every internal `href`/`src` in every
 template must go through Nunjucks's `| url` filter to pick that up. A
 hardcoded `/foo` path works locally and 404s in production — this
 already broke the deploy once (see git history), so don't reintroduce
 it in a new template.
+
+`site/src/data/index.njk` is the Data hub (`/data/`) — one row per
+config source (name, one-line description, licence, last-fetched
+timestamp, download link, link through to the source's own page),
+built by looping over `config.sources` at build time via
+`site/src/_data/dataHub.js`, cross-checked against `data/processed/`
+with the same enabled-in-config-AND-file-exists gating as the homepage
+cards. **Never hand-add a link to this template** — a source that's
+`enabled: true` with a processed file appears automatically; the test
+for "is the hub built correctly" is adding a throwaway source to
+config + a throwaway file to `data/processed/` and confirming it shows
+up with zero template edits (verified this session, then reverted).
+
+`base.njk`'s navbar has one top-level "Data" link, not one link per
+source — the five source pages nest under it as a hover/focus dropdown
+(`.nav-dropdown` in `styles.css`), so the navbar doesn't grow a new
+top-level item every time a source gets a page. The dropdown's own
+links still read their `href`s from `config.sources.<key>.slug`, same
+as before this restructuring. Adding a page for a new source means
+adding an `<a>` inside `.nav-dropdown__menu`, not a new top-level nav
+item. The footer keeps the old flat list of links (source, then
+per-page links) — footers don't have the same hover affordance as a
+navbar, so the clutter concern that motivated the navbar dropdown
+doesn't apply there.
 
 Data flows into templates through `site/src/_data/`:
 - `config.js` reads whichever `.yml` file it finds first under `/config/`
@@ -72,8 +108,11 @@ Data flows into templates through `site/src/_data/`:
   figure if its source is `enabled: true` in config **and**
   `data/processed/<slug>/<source-key>/*.json` exists — otherwise SOON.
   Adding real numbers for a new source means adding a formatter to
-  `FIGURE_FORMATTERS` (and a `page` entry in `CARD_META`) in that file,
-  not just dropping data on disk.
+  `FIGURE_FORMATTERS` in that file, not just dropping data on disk. A
+  card's `page` link is *not* set in `CARD_META` — it's derived from
+  `config.sources.<key>.slug` (`null` if the source has no slug yet, same
+  as a source with no detail page), the same field `dataHub.js` reads.
+- `dataHub.js` builds the Data hub's row list — see above.
 - `localities.js`, `populationLocalities.js`, `companiesLocalities.js`,
   and `deprivationLocalities.js` each walk every subdirectory of
   `/data/processed/` for their one source, via the shared
@@ -160,7 +199,7 @@ The homepage card mechanism gained a second visual type: `card.chartSvg`
 sparkline-polyline mechanism — see `homeCards.js`. IMD's card uses a
 compact, legend-less choropleth (`choropleth_mini.svg`) in place of its
 old "Decile N" text stat; the full map (with legend) and the distribution
-chart are on `/deprivation/` only. Both mechanisms read a chart file that
+chart are on `/data/deprivation/` only. Both mechanisms read a chart file that
 `pipeline/` writes separately from what `ingest/` writes — a card or page
 can load before its chart has been generated (rendered as if it just
 doesn't have one), so re-run `pipeline/imd_charts.py` after
@@ -583,6 +622,16 @@ fetch_lsoa_boundaries.py         onboarding tool, run by hand, not scheduled
 1. Write the script in `/ingest/`, reading its locality parameters from
    the config file passed as an argument — never from a hardcoded value.
 2. Add the source's config block to the schema (document required and
-   optional fields in the README's Data sources table).
+   optional fields in the README's Data sources table). Include a
+   `description` field (one line, shown on the Data hub) — and a `slug`
+   field once/if the source gets its own detail page under `/data/`
+   (see `site/src/_data/dataHub.js`).
 3. Test against at least one existing locality config before considering
    it done — a source that only works for Salisbury isn't finished.
+4. Confirm the new source appears automatically on the Data hub
+   (`/data/`) after `ingest/` (and `pipeline/`, if it computes a figure)
+   run — the hub is built by looping over `config.sources` and checking
+   `data/processed/`, so a source with `enabled: true` and a processed
+   file should show up with zero template edits. If it doesn't, that's a
+   bug in `site/src/_data/dataHub.js`, not a page that needs hand-editing
+   — fix the hub rather than adding a one-off entry for the new source.

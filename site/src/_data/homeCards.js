@@ -10,10 +10,13 @@ const { latestFile, readChartSvg } = require("../_helpers/sourceData.js");
 
 const DATA_ROOT = path.join(__dirname, "../../../data/processed");
 
+// `page` is not listed here — it's derived per-source from config's
+// `slug` field (site/src/_data/dataHub.js reads the same field), not
+// hardcoded per source. A source with no `slug` in config has no page
+// yet and its card renders SOON-only, even once it has data.
 const CARD_META = {
   ons_population: {
     title: "Population & Economy",
-    page: "/population/",
     // LSOA-level (summed across the BUA's actual LSOA membership), not
     // local-authority-level — this used to report Wiltshire's population
     // (~500k) instead of Salisbury's. See CLAUDE.md.
@@ -21,32 +24,26 @@ const CARD_META = {
   },
   police_crime: {
     title: "Police & Crime",
-    page: "/crime/",
     desc: (c) => `Monthly incident counts from police.uk, filtered to a ${c.geography.radius_km}km radius of central ${c.locality.name}.`,
   },
   companies_house: {
     title: "Companies & Business",
-    page: "/companies/",
     desc: (c) => `Active companies with a registered office in the ${(c.geography.postcode_prefixes || []).join("/")} postcode area, via Companies House.`,
   },
   council_transparency: {
     title: "Council Spending",
-    page: null,
     desc: (c) => `Payments over £500 published by ${c.sources.council_transparency.council_name} under the transparency code.`,
   },
   planning_register: {
     title: "Planning Register",
-    page: null,
     desc: (c) => `Planning applications from ${c.sources.council_transparency ? c.sources.council_transparency.council_name : "the council"}'s register.`,
   },
   imd_deprivation: {
     title: "Deprivation (IMD)",
-    page: "/deprivation/",
     desc: (c) => `English Indices of Deprivation, joined per Lower-layer Super Output Area across ${c.locality.name}'s ${(c.geography.lsoa_codes || []).length} LSOAs.`,
   },
   local_elections: {
     title: "Local Elections",
-    page: null,
     desc: () => "Ward-level results, once the local elections ingestion script is built.",
   },
   // NOTE: this source's geography is the Community Area (Area Board
@@ -54,7 +51,6 @@ const CARD_META = {
   // "<locality name>" — see CLAUDE.md and ingest/community_area_jsna.py.
   community_area_jsna: {
     title: "Community Area JSNA",
-    page: "/jsna/",
     desc: (c) =>
       `Selected indicators from Wiltshire Council's statutory Community Area JSNA for the ${c.sources.community_area_jsna ? c.sources.community_area_jsna.area_display_name : "Community Area"} — a wider boundary than ${c.locality.name}'s Built-Up Area used elsewhere on this site.`,
   },
@@ -141,7 +137,8 @@ module.exports = function () {
   const slug = config.locality.slug;
 
   return Object.entries(config.sources || {}).map(([key, sourceConfig]) => {
-    const meta = CARD_META[key] || { title: key, page: null, desc: () => "" };
+    const meta = CARD_META[key] || { title: key, desc: () => "" };
+    const page = sourceConfig.slug ? `/data/${sourceConfig.slug}/` : null;
     const found = sourceConfig.enabled ? latestFile(DATA_ROOT, slug, key) : null;
     const formatter = found ? FIGURE_FORMATTERS[key] : null;
     const f = formatter ? formatter(found.data, slug) : null;
@@ -150,7 +147,7 @@ module.exports = function () {
       return {
         key,
         title: meta.title,
-        page: meta.page,
+        page,
         isSoon: false,
         figure: f.figure,
         chartSvg: f.chartSvg || null,
@@ -166,7 +163,7 @@ module.exports = function () {
     return {
       key,
       title: meta.title,
-      page: meta.page,
+      page,
       isSoon: true,
       figure: "—",
       chartSvg: null,

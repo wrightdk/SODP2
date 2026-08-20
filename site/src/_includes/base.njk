@@ -31,11 +31,19 @@
 
       <nav class="primary-nav" aria-label="Primary">
         <a href="{{ '/' | url }}" aria-current="{{ 'page' if isHome else 'false' }}">Home</a>
-        <a href="{{ '/crime/' | url }}" aria-current="{{ 'page' if isCrime else 'false' }}">Crime &amp; Safety</a>
-        <a href="{{ '/population/' | url }}" aria-current="{{ 'page' if isPopulation else 'false' }}">Population</a>
-        <a href="{{ '/companies/' | url }}" aria-current="{{ 'page' if isCompanies else 'false' }}">Companies</a>
-        <a href="{{ '/deprivation/' | url }}" aria-current="{{ 'page' if isDeprivation else 'false' }}">Deprivation</a>
-        <a href="{{ '/jsna/' | url }}" aria-current="{{ 'page' if isJsna else 'false' }}">Community Area JSNA</a>
+        <div class="nav-dropdown{{ ' nav-dropdown--active' if (isData or isCrime or isPopulation or isCompanies or isDeprivation or isJsna) }}">
+          <a href="{{ '/data/' | url }}" class="nav-dropdown__trigger" aria-current="{{ 'page' if isData else 'false' }}" aria-haspopup="true">
+            Data
+            <svg class="nav-dropdown__chevron" width="9" height="6" viewBox="0 0 9 6" aria-hidden="true"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <div class="nav-dropdown__menu">
+            <a href="{{ ('/data/' ~ config.sources.police_crime.slug ~ '/') | url }}" aria-current="{{ 'page' if isCrime else 'false' }}">Crime &amp; Safety</a>
+            <a href="{{ ('/data/' ~ config.sources.ons_population.slug ~ '/') | url }}" aria-current="{{ 'page' if isPopulation else 'false' }}">Population</a>
+            <a href="{{ ('/data/' ~ config.sources.companies_house.slug ~ '/') | url }}" aria-current="{{ 'page' if isCompanies else 'false' }}">Companies</a>
+            <a href="{{ ('/data/' ~ config.sources.imd_deprivation.slug ~ '/') | url }}" aria-current="{{ 'page' if isDeprivation else 'false' }}">Deprivation</a>
+            <a href="{{ ('/data/' ~ config.sources.community_area_jsna.slug ~ '/') | url }}" aria-current="{{ 'page' if isJsna else 'false' }}">Community Area JSNA</a>
+          </div>
+        </div>
       </nav>
 
       <div class="header-controls">
@@ -58,11 +66,12 @@
       </div>
       <nav class="site-footer__nav" aria-label="Footer">
         <a href="{{ '/' | url }}">Home</a>
-        <a href="{{ '/crime/' | url }}">Crime &amp; Safety</a>
-        <a href="{{ '/population/' | url }}">Population</a>
-        <a href="{{ '/companies/' | url }}">Companies</a>
-        <a href="{{ '/deprivation/' | url }}">Deprivation</a>
-        <a href="{{ '/jsna/' | url }}">Community Area JSNA</a>
+        <a href="{{ '/data/' | url }}">Data</a>
+        <a href="{{ ('/data/' ~ config.sources.police_crime.slug ~ '/') | url }}">Crime &amp; Safety</a>
+        <a href="{{ ('/data/' ~ config.sources.ons_population.slug ~ '/') | url }}">Population</a>
+        <a href="{{ ('/data/' ~ config.sources.companies_house.slug ~ '/') | url }}">Companies</a>
+        <a href="{{ ('/data/' ~ config.sources.imd_deprivation.slug ~ '/') | url }}">Deprivation</a>
+        <a href="{{ ('/data/' ~ config.sources.community_area_jsna.slug ~ '/') | url }}">Community Area JSNA</a>
       </nav>
       <div class="site-footer__meta">
         <p>Published under the Open Government Licence.<br>
