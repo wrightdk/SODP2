@@ -196,6 +196,35 @@ sources:
                                            # same geography_key pattern as the other sources
     update_frequency: "as elections occur"
 
+  # Wiltshire's Community Area Joint Strategic Needs Assessment (CAJSNA) —
+  # see CLAUDE.md's "Sources that are portable in pattern, not in
+  # specifics" section. This is a document-parsing source, not an API:
+  # no geography_key, because the PDF isn't filtered against lsoa_codes
+  # or any other geography.* list — it's a fixed per-area document keyed
+  # by area_name below.
+  #
+  # CRITICAL: area_name is "Salisbury Community Area", NOT the same
+  # boundary as geography.bua_name ("Salisbury" the Built-Up Area used by
+  # every other source). Wiltshire's Community Areas are Area
+  # Board/CAJSNA geographies (town plus surrounding villages/parishes) —
+  # wider than the BUA. Figures from this source must never be presented
+  # alongside BUA-based figures as if they describe the same population.
+  # See ingest/community_area_jsna.py and CLAUDE.md for why this matters.
+  community_area_jsna:
+    enabled: true
+    council_name: "Wiltshire Council"
+    area_name: "Salisbury"                # the area-board name as it appears in the PDF's
+                                           # own prose (e.g. "In Salisbury, 4.7% ...") — used
+                                           # to build the extraction regexes, not a display label
+    area_display_name: "Salisbury Community Area"  # what to show users — always this, never
+                                           # just "Salisbury", to avoid implying BUA geography
+    pdf_url: "https://www.wiltshireintelligence.org.uk/wp-content/uploads/2024/01/Salisbury.pdf"
+    landing_page_url: "https://www.wiltshireintelligence.org.uk/cajsna/salisbury/"
+    update_frequency: "irregular"         # no published cadence found on wiltshireintelligence.org.uk;
+                                           # current edition is "CAJSNA 2024" (per the PDF's own title
+                                           # page) — check the landing page by hand before assuming a
+                                           # newer edition exists; don't guess a refresh schedule
+
 # ----------------------------------------------------------------
 # EDITORIAL PARAMETERS
 # Controls when and how the narrative layer speaks — and is the

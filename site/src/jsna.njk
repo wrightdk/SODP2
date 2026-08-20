@@ -1,0 +1,73 @@
+---
+layout: base.njk
+title: Community Area JSNA
+isJsna: true
+---
+<div class="section" style="padding-bottom:56px;">
+  <h1>Community Area JSNA</h1>
+  <p class="section__intro">
+    Selected indicators from Wiltshire Council's Community Area Joint Strategic Needs
+    Assessment (CAJSNA) — a statutory report produced for every Wiltshire Area Board.
+  </p>
+
+  {% for locality in communityAreaJsnaLocalities %}
+  {% set data = locality.jsna %}
+  <section style="margin-top:32px;">
+
+    <div style="background:#4a1d1d;border:1px solid #7a2e2e;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
+      <h2 style="font-size:15px;font-weight:700;margin:0 0 8px;color:#ffb4b4;">
+        &#9888; Different geography from the rest of this site
+      </h2>
+      <p style="margin:0;font-size:14px;line-height:1.5;color:#ffe0e0;">
+        {{ data.geography.caveat }}
+      </p>
+    </div>
+
+    <h2 style="font-size:22px;">{{ data.geography.label }} — {{ data.report_edition }}</h2>
+    <p style="color:var(--text-muted);margin-top:8px;">
+      Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>
+      (<a href="{{ data.pdf_url }}">PDF data pack</a>), PDF published/fetched
+      {{ data.pdf_fetched_at }}. Page data last checked {{ data.fetched_at }}.
+      <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
+    </p>
+    <p style="color:var(--text-muted);margin-top:4px;font-size:13px;">
+      Each indicator below carries its own data period (e.g. Census 2021, QOF 2022/23) —
+      that's when the underlying figure was collected, not when this page fetched the PDF.
+    </p>
+
+    <div style="overflow-x:auto;margin-top:16px;">
+      <table style="width:100%;font-size:13.5px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Theme</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Indicator</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">{{ data.geography.label }}</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Wiltshire</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Period</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for indicator in data.indicators %}
+          <tr>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ indicator.theme }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ indicator.label }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;">{{ indicator.value }}{{ indicator.unit }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);text-align:right;">{{ indicator.wiltshire_value }}{{ indicator.unit }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ indicator.period }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if data.indicators_skipped.length %}
+    <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">
+      {{ data.indicators_skipped.length }} known indicator pattern(s) did not extract cleanly from this
+      edition and were skipped rather than guessed at: {{ data.indicators_skipped | join(", ") }}.
+    </p>
+    {% endif %}
+  </section>
+  {% else %}
+  <p style="margin-top:24px;">No processed data found yet — run <code>ingest/community_area_jsna.py</code> first.</p>
+  {% endfor %}
+</div>

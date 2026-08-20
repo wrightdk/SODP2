@@ -356,6 +356,9 @@ uv run pipeline/companies_house_stats.py --config config/salisbury.yml   # compu
 # Ingestion: IMD, joined against lsoa_codes — no network call, reads data/raw/imd_deprivation/*.xlsx
 uv run ingest/imd_deprivation.py --config config/salisbury.yml
 
+# Ingestion: Wiltshire CAJSNA Summary Data Pack PDF — downloads + parses, no pipeline step (nothing derived)
+uv run ingest/community_area_jsna.py --config config/salisbury.yml
+
 # Onboarding: cache LSOA boundary geometry for choropleths (one-off, like generate_locality_geography.py)
 uv run fetch_lsoa_boundaries.py --config config/salisbury.yml
 
@@ -413,6 +416,20 @@ run/test commands here rather than leaving future sessions to guess.
 5. **`generate_locality_geography.py` is a one-off onboarding tool**, run
    by hand when adding a new locality. It does not belong in the scheduled
    ingestion workflow — don't add it to `.github/workflows/ingest.yml`.
+
+6. **Extraction/parsing work reports against an explicit checklist of what
+   it should have found, not just a list of what it did find.** Before
+   writing extraction code for a source (a PDF, a scraped page, any
+   document with a known set of expected fields), enumerate what a
+   complete extraction looks like first — then report matches AND misses
+   against that list. Silently incomplete output (the script ran, wrote a
+   file, and looked done) is a bug, not an acceptable partial result — a
+   missing figure needs to be visible as "expected but not found," not
+   absent without comment. `ingest/community_area_jsna.py` follows this:
+   `build_patterns()` is the checklist, and every pattern that doesn't
+   match gets logged to `indicators_skipped` in the output file (and
+   printed at run time), rather than just quietly contributing fewer rows
+   than expected.
 
 ## The ONS geography join plan
 
@@ -497,6 +514,31 @@ Coverage: England and Wales only (see README for why — different
 geography systems in Scotland/NI). Don't extend this join plan to those
 nations without first checking what the equivalent lookup products are;
 they aren't ONS products.
+
+## Sources that are portable in pattern, not in specifics
+
+Two known categories exist everywhere in principle but differ in every
+actual detail per locality — never assume either transfers as-is to a
+second locality's config, even though every locality has one:
+
+- **Council transparency data** (spend, planning registers) — every
+  council publishes something, but format/columns/URL differ every time.
+  See the `council_transparency` investigation above (still blocked on a
+  Cloudflare wall for Wiltshire) for how deep that variance goes even
+  within one council's own site.
+- **Statutory local intelligence / JSNA products** — every county or
+  unitary authority produces a Joint Strategic Needs Assessment (a legal
+  requirement for Health and Wellbeing Boards), but under its own
+  branding, URL, geography, and format. Wiltshire's is
+  wiltshireintelligence.org.uk's CAJSNA; other councils will have an
+  equivalent that looks nothing like it structurally. Not built yet —
+  flagging so a future session doesn't assume Wiltshire's shape
+  generalizes.
+
+If you're onboarding a second locality and either category is already
+wired up for the first, budget time to re-verify the URL, file format,
+and column names from scratch — don't assume the first locality's
+config values are anything more than a starting guess for the second.
 
 ## Target repo structure
 

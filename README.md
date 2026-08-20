@@ -104,19 +104,37 @@ geography generator script, not just a new config file.
 | Local elections | Ward-level, England/Wales | Filtered via `wards`; disabled by default until the ingestion script exists |
 | Council transparency (spend-over-£500) | Varies by council | Genuinely non-standardised — see below. Config: `council_transparency` |
 | Planning register | Varies by council | Genuinely non-standardised, same as above. Config: `planning_register` (separate source, disabled by default) |
+| Community Area JSNA (statutory local intelligence) | Varies by council — this project reads Wiltshire's CAJSNA | Genuinely non-standardised, same category as council transparency — see below. Config: `community_area_jsna` |
 
-Council transparency and planning register data are the one area where
-"one pipeline, many localities" breaks down cleanly — and they're two
-separate sources in config (`council_transparency`, `planning_register`),
-not one, since a council can publish one without the other. Every council
-publishes spend-over-£500 logs and planning registers in its own format
-(CSV, PDF, XLSX, with different column names). The parser script is meant
-to be generic — reading a `format` field and a `column_map` from
-config — but the specifics of each council's actual export are captured
-per-locality in config, not hardcoded. This is also where
-document-extraction (PDF table parsing, OCR on scanned committee papers)
-does real, previously-manual work. **Neither ingestion script exists yet**
-— `council_transparency` was investigated and found to need a
+Council transparency, planning register, and Community Area JSNA data
+are the category where "one pipeline, many localities" breaks down
+cleanly — three separate sources in config (`council_transparency`,
+`planning_register`, `community_area_jsna`), not one, since a council
+can publish any of these independently of the others. Every county or
+unitary authority publishes something in each category, but under its
+own branding, URL, geography, and format (CSV, PDF, XLSX, interactive
+dashboard, with different column names and — for JSNA-style products —
+different sub-council geographies entirely). The council-transparency
+parser script is meant to be generic — reading a `format` field and a
+`column_map` from config — but the specifics of each council's actual
+export are captured per-locality in config, not hardcoded. This is also
+where document-extraction (PDF table/prose parsing, OCR on scanned
+committee papers) does real, previously-manual work.
+`ingest/community_area_jsna.py` is a first working example of that
+pattern: it downloads and parses Wiltshire's CAJSNA "Summary Data Pack"
+PDF (real embedded text, not scanned) for one Community Area, extracting
+whichever indicators appear as clean, unambiguous prose sentences and
+skipping the rest rather than guessing. Its output is labelled
+"<Locality> Community Area" throughout, never the bare locality name —
+Wiltshire's Community Area (Area Board) boundary is wider than the
+Built-Up Area every other source on this site uses, and conflating the
+two would misrepresent the population a figure describes. The parser
+itself is Wiltshire-CAJSNA-specific (its indicator sentence patterns are
+tied to that document's exact wording), not a generic JSNA parser — a
+different council's JSNA would need its own parser script, the same way
+`council_transparency` and `planning_register` would. **`council_transparency`
+and `planning_register` still don't have ingestion scripts** —
+`council_transparency` was investigated and found to need a
 headless-browser dependency to get past the target council's Cloudflare
 protection (see CLAUDE.md for the full findings); `planning_register` is
 config scaffolding only, disabled by default, and hasn't been

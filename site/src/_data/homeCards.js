@@ -49,6 +49,15 @@ const CARD_META = {
     page: null,
     desc: () => "Ward-level results, once the local elections ingestion script is built.",
   },
+  // NOTE: this source's geography is the Community Area (Area Board
+  // boundary — wider than the BUA every other card uses), never just
+  // "<locality name>" — see CLAUDE.md and ingest/community_area_jsna.py.
+  community_area_jsna: {
+    title: "Community Area JSNA",
+    page: "/jsna/",
+    desc: (c) =>
+      `Selected indicators from Wiltshire Council's statutory Community Area JSNA for the ${c.sources.community_area_jsna ? c.sources.community_area_jsna.area_display_name : "Community Area"} — a wider boundary than ${c.locality.name}'s Built-Up Area used elsewhere on this site.`,
+  },
 };
 
 // Sources with a formatter here can render real numbers once they have
@@ -112,6 +121,16 @@ const FIGURE_FORMATTERS = {
       hasSpark: false,
       fetchedAt: latest.fetched_at,
       updateLabel: `${latest.release} deprivation data`,
+    };
+  },
+  community_area_jsna: (latest) => {
+    if (!latest.indicators || latest.indicators.length === 0) return null;
+    return {
+      figure: String(latest.indicators.length),
+      unit: `indicators · ${latest.geography.label}`,
+      hasSpark: false,
+      fetchedAt: latest.fetched_at,
+      updateLabel: `${latest.report_edition} data pack`,
     };
   },
 };
