@@ -1,0 +1,68 @@
+---
+layout: base.njk
+title: Local Elections
+isLocalElections: true
+permalink: "/data/{{ config.sources.local_elections.slug }}/index.html"
+---
+<div class="section" style="padding-bottom:56px;">
+  <h1>Local Elections</h1>
+  <p class="section__intro">
+    Council election results from Democracy Club, covering the whole council — needed for
+    the composition chart below — with the locality's own divisions picked out separately.
+  </p>
+
+  {% for locality in localElectionsLocalities %}
+  {% set data = locality.localElections %}
+  <section style="margin-top:32px;">
+    <h2 style="font-size:22px;">{{ data.filter.council_name }}</h2>
+    <p style="color:var(--text-muted);margin-top:8px;">
+      {{ data.current_composition_largest_party_short }} is the largest party, {{ data.current_composition[data.current_composition_largest_party] }}
+      of {{ data.current_composition_total_seats }} seats,
+      as of {{ data.current_composition_as_of }}{{ " (updated by a by-election since the " + data.current_composition_anchor_election + " full election)" if data.current_composition_as_of != data.current_composition_anchor_election else " — the " + data.current_composition_anchor_election + " election result" }}.
+      Source: <a href="{{ data.source_url }}">{{ data.source_url }}</a>,
+      fetched {{ data.fetched_at }}.
+      <a href="{{ locality.downloadPath | url }}">Download the raw JSON</a>.
+    </p>
+
+    {% if locality.hemicycleSvg %}
+    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">Current council composition</h3>
+      {{ locality.hemicycleSvg | safe }}
+    </div>
+    {% endif %}
+    {% if locality.voteShareSvg %}
+    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">{{ config.locality.name }}'s vote share over time</h3>
+      {{ locality.voteShareSvg | safe }}
+    </div>
+    {% endif %}
+    {% if not locality.hemicycleSvg and not locality.voteShareSvg %}
+    <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">Charts not generated yet — run <code>pipeline/elections_charts.py</code>.</p>
+    {% endif %}
+
+    <h3 style="font-size:15px;font-weight:600;margin-top:24px;margin-bottom:8px;">{{ config.locality.name }}'s current divisions</h3>
+    <div style="overflow-x:auto;margin-top:8px;">
+      <table style="width:100%;font-size:13.5px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Division</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Party</th>
+            <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-muted);">Since</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for division in data.locality_current_divisions %}
+          <tr>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ division.post_label }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ division.party_short }}</td>
+            <td style="padding:9px 10px;border-bottom:1px solid var(--border);">{{ division.election_date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% else %}
+  <p style="margin-top:24px;">No processed data found yet — run <code>ingest/local_elections.py</code> first.</p>
+  {% endfor %}
+</div>

@@ -101,7 +101,8 @@ geography generator script, not just a new config file.
 | Police.uk crime data | England, Wales, NI | Filtered via `centroid` + `radius_km` |
 | Companies House | UK-wide | Filtered via `postcode_prefixes` |
 | Index of Multiple Deprivation | England only (Wales has a separate, non-comparable WIMD) | Filtered via `lsoa_codes`; a per-LSOA table, not a single locality value — see config comments |
-| Local elections | Ward-level, England/Wales | Filtered via `wards`; disabled by default until the ingestion script exists |
+| Local council elections | England/Wales, via Democracy Club | Fetched for the whole council (`council_slug`); the locality's own divisions are selected per election year in `pipeline/`, not via `wards` — see CLAUDE.md. Config: `local_elections` |
+| General (parliamentary) elections | England/Wales, via Democracy Club, 2010 onwards | Filtered via `parliamentary_constituencies`. Not the House of Commons Library's 1918-2019 archive — that's Cloudflare-blocked, see CLAUDE.md. Config: `parliamentary_elections` |
 | Council transparency (spend-over-£500) | Varies by council | Genuinely non-standardised — see below. Config: `council_transparency` |
 | Planning register | Varies by council | Genuinely non-standardised, same as above. Config: `planning_register` (separate source, disabled by default) |
 | Community Area JSNA (statutory local intelligence) | Varies by council — this project reads Wiltshire's CAJSNA | Genuinely non-standardised, same category as council transparency — see below. Config: `community_area_jsna` |
