@@ -25,11 +25,20 @@ Democracy Club's export_csv only filters server-side by a regex against
 `election_id` (the UK-wide parent election, e.g. "parl.2024-07-04"), not
 by `post_label` (the per-constituency ballot) — there's no per-constituency
 query parameter. So this script fetches every constituency's results for
-every general election since 2010 (~20,000 candidate rows, a few MB) and
-filters to this locality's constituency/constituencies client-side before
-writing anything out — the same "fetch broad, write filtered" shape as
-imd_deprivation.py filtering a whole England-wide workbook down to
-lsoa_codes.
+every general election since 2010 (~20,000 candidate rows, ~20MB
+pretty-printed) and filters to this locality's constituency/
+constituencies client-side before writing anything out — the same
+"fetch broad, write filtered" shape as imd_deprivation.py filtering a
+whole England-wide workbook down to lsoa_codes. Unlike that workbook,
+this is a genuinely nationwide, not-locality-specific pull, so the raw
+cache (~20MB) is duplicated in full per locality
+(data/raw/parliamentary_elections/<slug>/) rather than shared — there's
+no cross-locality cache reuse anywhere else in this codebase either
+(every ingest script runs against one config at a time), so this
+matches the existing per-locality-cache convention rather than
+inventing a new shared-cache mechanism; a second locality onboarding
+will re-download and re-commit its own ~20MB copy. Worth revisiting if
+this project ever onboards many localities at once.
 
 Caching: like companies_house.py, there's no natural per-election
 snapshot boundary to key a cache on from this script's point of view (it
@@ -109,8 +118,8 @@ def fetch_csv_rows(params):
     return rows, url
 
 
-def load_or_fetch_raw(month: str, force: bool):
-    raw_dir = Path("data/raw/parliamentary_elections")
+def load_or_fetch_raw(slug: str, month: str, force: bool):
+    raw_dir = Path("data/raw/parliamentary_elections") / slug
     raw_dir.mkdir(parents=True, exist_ok=True)
     raw_path = raw_dir / f"{month}.json"
 
@@ -160,7 +169,7 @@ def main():
         raise ValueError(f"config.geography.{geography_key} is empty — nothing to filter general election results by.")
 
     month = args.month or datetime.now(timezone.utc).strftime("%Y-%m")
-    all_rows, source_url, fetched_at = load_or_fetch_raw(month, args.force)
+    all_rows, source_url, fetched_at = load_or_fetch_raw(slug, month, args.force)
 
     constituency_set = set(constituencies)
     matched = [
