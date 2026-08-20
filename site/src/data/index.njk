@@ -1,0 +1,40 @@
+---
+layout: base.njk
+title: Data
+isData: true
+---
+<div class="section" style="padding-bottom:56px;">
+  <h1>Data</h1>
+  <p class="section__intro">
+    Every dataset this site tracks for {{ config.locality.name }} — live or coming soon.
+    Built from <code>config/{{ config.locality.slug }}.yml</code>'s sources block, so a new
+    source appears here as soon as it's enabled and has been ingested, with no template
+    changes.
+  </p>
+
+  <div style="margin-top:28px;display:flex;flex-direction:column;gap:14px;">
+    {% for row in dataHub %}
+    <div class="card{{ ' card--soon' if not row.isLive }}" style="display:block;">
+      <div class="card__top">
+        <h3 class="card__title">{{ row.title }}</h3>
+        {% if not row.isLive %}<span class="card__soon-badge">SOON</span>{% endif %}
+      </div>
+      <p class="card__desc" style="margin-top:8px;">{{ row.description }}</p>
+      <div style="margin-top:12px;font-size:12.5px;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:6px 16px;">
+        <span>Licence: {{ row.licence }}</span>
+        {% if row.isLive %}
+        <span>Last fetched: {{ row.fetchedAt }}</span>
+        {% endif %}
+      </div>
+      {% if row.isLive %}
+      <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:16px;font-size:13px;">
+        {% if row.page %}<a href="{{ row.page | url }}">View page &rarr;</a>{% endif %}
+        {% if row.downloadPath %}<a href="{{ row.downloadPath | url }}">Download raw JSON &rarr;</a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+    {% else %}
+    <p style="margin-top:24px;">No sources configured yet.</p>
+    {% endfor %}
+  </div>
+</div>

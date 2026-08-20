@@ -113,6 +113,11 @@ sources:
 
   ons_population:
     enabled: true
+    slug: "population"                    # URL segment for this source's own site page
+                                           # (/data/<slug>/) and its Data hub row — the site
+                                           # reads this rather than hardcoding "population"
+                                           # in a template, see CLAUDE.md
+    description: "ONS small-area population estimates, summed across the locality's LSOAs."
     geography_key: lsoa_codes             # was local_authority_codes, which summed to
                                            # Wiltshire's whole population (~500k), not
                                            # Salisbury's — matches imd_deprivation's pattern
@@ -125,6 +130,8 @@ sources:
 
   police_crime:
     enabled: true
+    slug: "crime"                         # URL segment — see ons_population.slug above
+    description: "Monthly street-level crime incidents from police.uk, filtered to the local area."
     filter_method: "radius"               # options: radius | force_name — needs an algorithm
                                            # (centroid + radius_km together), not just a
                                            # single geography.* field, so it's filter_method,
@@ -133,6 +140,8 @@ sources:
 
   companies_house:
     enabled: true
+    slug: "companies"                     # URL segment — see ons_population.slug above
+    description: "Active company registrations from Companies House, filtered by postcode."
     geography_key: postcode_prefixes      # was filter_by: "postcode_prefixes" — unified
                                            # onto geography_key since this is simple list
                                            # membership against one geography.* field, same
@@ -149,6 +158,7 @@ sources:
   # blocker from scratch.
   council_transparency:
     enabled: true
+    description: "Council payments over £500, published under the transparency code."
     council_name: "Wiltshire Council"
     spend_over_500_url: "https://www.wiltshire.gov.uk/open-data-payments"  # NOT a direct
                                            # file — a listing page grouped by financial
@@ -169,6 +179,7 @@ sources:
 
   planning_register:
     enabled: false                        # not every locality launches with every source
+    description: "Planning applications from the council's planning register."
     portal_url: null
     format: "pdf"
 
@@ -178,6 +189,8 @@ sources:
   # not a geography identifier resolved once at onboarding.
   imd_deprivation:
     enabled: true
+    slug: "deprivation"                   # URL segment — see ons_population.slug above
+    description: "English Indices of Deprivation — a per-LSOA relative deprivation ranking."
     geography_key: lsoa_codes
     # NB: "IMD" specifically is the English Indices of Deprivation
     # (published by the housing/communities department, not ONS).
@@ -192,6 +205,7 @@ sources:
   # script exists — see CLAUDE.md before enabling.
   local_elections:
     enabled: false
+    description: "Ward-level local election results."
     geography_key: wards                  # was filter_by: "wards" — simple list membership,
                                            # same geography_key pattern as the other sources
     update_frequency: "as elections occur"
@@ -212,6 +226,8 @@ sources:
   # See ingest/community_area_jsna.py and CLAUDE.md for why this matters.
   community_area_jsna:
     enabled: true
+    slug: "jsna"                          # URL segment — see ons_population.slug above
+    description: "Selected indicators from Wiltshire Council's statutory Community Area JSNA."
     council_name: "Wiltshire Council"
     area_name: "Salisbury"                # the area-board name as it appears in the PDF's
                                            # own prose (e.g. "In Salisbury, 4.7% ...") — used
